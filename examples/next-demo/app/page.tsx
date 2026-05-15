@@ -25,7 +25,7 @@ import { ThemeToggle } from "./_components/ThemeToggle";
  * close, so the page tolerates 404s gracefully via the kit's error states.
  */
 const HERO_TICKERS = [
-  { ticker: "KXBTC15M-26MAY151745-45", label: "BTC · 15m" },
+  { ticker: "KXNFLAFCCHAMP-27-CIN", label: "NFL · AFC Champ · CIN" },
   { ticker: "KXPGATOUR-PGC26-SSCH", label: "PGA · Scheffler" },
   { ticker: "KXMLBGAME-26MAY151910MILMIN-MIL", label: "MLB · MIL @ MIN" },
   { ticker: "KXITFMATCH-26MAY15PRIDEL-DEL", label: "Tennis · Del Pino" },
@@ -41,7 +41,7 @@ const TRENDING_TICKERS = [
   "KXMLBTOTAL-26MAY152040AZCOL-12",
   "KXAPFDDHGAME-26MAY15TRICPO-CPO",
   "KXPGATOUR-PGC26-ASMA",
-  "KXBTCD-26MAY1518-T79099.99",
+  "KXNBAGAME-26MAY15DETCLE-CLE",
   "KXNASCARRACE-ECO26-LARI",
   "KXTRUMPMENTIONB-26MAY15-CRYP",
 ];
