@@ -1,8 +1,19 @@
 {
   "name": "@kalshi-kit/next",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "One-line Next.js helper that proxies Kalshi API requests through your app",
   "license": "MIT",
+  "author": "Sam <sam.shridhar1950f@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sam-shridhar1950f/kalshi-kit.git",
+    "directory": "packages/next"
+  },
+  "homepage": "https://github.com/sam-shridhar1950f/kalshi-kit#readme",
+  "bugs": "https://github.com/sam-shridhar1950f/kalshi-kit/issues",
+  "engines": {
+    "node": ">=18"
+  },
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -15,8 +26,13 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",

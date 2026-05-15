@@ -4,7 +4,7 @@ import { normalizeMarket } from "../normalize";
 import type { Market } from "../types";
 import { usePolledResource } from "./usePolledResource";
 
-export interface UseMarketSearchOptions {
+export interface UseEventSearchOptions {
   /** ms to wait after the last keystroke before fetching. Default 250. */
   debounceMs?: number;
   /** Result cap. Default 20. */
@@ -17,7 +17,7 @@ export interface UseMarketSearchOptions {
   enabled?: boolean;
 }
 
-export interface UseMarketSearchResult {
+export interface UseEventSearchResult {
   results: Market[];
   isLoading: boolean;
   error: Error | null;
@@ -69,10 +69,10 @@ function matchesEvent(
   return haystack.includes(needle);
 }
 
-export function useMarketSearch(
+export function useEventSearch(
   query: string,
-  options: UseMarketSearchOptions = {},
-): UseMarketSearchResult {
+  options: UseEventSearchOptions = {},
+): UseEventSearchResult {
   const {
     debounceMs = 250,
     limit = 20,

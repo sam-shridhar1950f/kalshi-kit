@@ -1,8 +1,19 @@
 {
   "name": "@kalshi-kit/react",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Drop-in React components for Kalshi prediction markets",
   "license": "MIT",
+  "author": "Sam <sam.shridhar1950f@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sam-shridhar1950f/kalshi-kit.git",
+    "directory": "packages/react"
+  },
+  "homepage": "https://github.com/sam-shridhar1950f/kalshi-kit#readme",
+  "bugs": "https://github.com/sam-shridhar1950f/kalshi-kit/issues",
+  "engines": {
+    "node": ">=18"
+  },
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -16,8 +27,13 @@
     "./styles.css": "./dist/styles.css"
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "sideEffects": [
     "**/*.css"
   ],

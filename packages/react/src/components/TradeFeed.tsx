@@ -17,7 +17,7 @@ export interface TradeFeedProps {
    * Ignored when `data` is supplied.
    */
   pollIntervalMs?: number;
-  /** Override the heading text. Default "RECENT TRADES". */
+  /** Override the heading text. Default "Recent trades". */
   heading?: string;
   /**
    * Pre-fetched trades. When supplied, the component renders from this
@@ -26,7 +26,7 @@ export interface TradeFeedProps {
   data?: Trade[];
   /**
    * Called when a trade row is clicked. Wires the row as a `<button>` when
-   * supplied. Visual polish lands in Sprint 3.
+   * supplied.
    */
   onTradeClick?: (trade: Trade) => void;
   /** Override YES/NO colors for this feed only. Falls back to the theme. */

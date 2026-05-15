@@ -116,16 +116,18 @@ export type { UseWatchlistResult } from "./hooks/useWatchlist";
 export { ShareCard } from "./components/ShareCard";
 export type { ShareCardProps } from "./components/ShareCard";
 
-export { MarketSearch } from "./components/MarketSearch";
-export type { MarketSearchProps } from "./components/MarketSearch";
+export { EventSearch } from "./components/EventSearch";
+export type { EventSearchProps } from "./components/EventSearch";
 
 export { CategoryFilter } from "./components/CategoryFilter";
 export type { CategoryFilterProps } from "./components/CategoryFilter";
 
-export { useMarketSearch } from "./hooks/useMarketSearch";
+export { useEventSearch } from "./hooks/useEventSearch";
 export type {
-  UseMarketSearchOptions,
-  UseMarketSearchResult,
-} from "./hooks/useMarketSearch";
+  UseEventSearchOptions,
+  UseEventSearchResult,
+} from "./hooks/useEventSearch";
 
-export const VERSION = "0.0.1";
+export type { KalshiColors } from "./theme";
+
+export const VERSION = "0.1.0";

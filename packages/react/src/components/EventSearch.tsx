@@ -5,11 +5,11 @@ import {
   useState,
   type KeyboardEvent as ReactKeyboardEvent,
 } from "react";
-import { useMarketSearch } from "../hooks/useMarketSearch";
+import { useEventSearch } from "../hooks/useEventSearch";
 import { formatCents } from "../format";
 import type { Market } from "../types";
 
-export interface MarketSearchProps {
+export interface EventSearchProps {
   /** Controlled query value. If omitted the component manages its own. */
   value?: string;
   onChange?: (next: string) => void;
@@ -17,7 +17,7 @@ export interface MarketSearchProps {
   onSelect?: (market: Market) => void;
   placeholder?: string;
   className?: string;
-  /** Forwarded to useMarketSearch. */
+  /** Forwarded to useEventSearch. */
   limit?: number;
   category?: string;
   seriesTicker?: string;
@@ -26,7 +26,7 @@ export interface MarketSearchProps {
   maxHeight?: number;
 }
 
-export function MarketSearch({
+export function EventSearch({
   value,
   onChange,
   onSelect,
@@ -37,7 +37,7 @@ export function MarketSearch({
   seriesTicker,
   debounceMs = 250,
   maxHeight = 320,
-}: MarketSearchProps) {
+}: EventSearchProps) {
   const isControlled = value !== undefined;
   const [internalValue, setInternalValue] = useState("");
   const query = isControlled ? value : internalValue;
@@ -48,7 +48,7 @@ export function MarketSearch({
   const rootRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const { results, isLoading, error } = useMarketSearch(query, {
+  const { results, isLoading, error } = useEventSearch(query, {
     limit,
     category,
     seriesTicker,

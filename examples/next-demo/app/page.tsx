@@ -9,8 +9,8 @@ import {
   EventMarketList,
   ExchangeStatusBadge,
   KalshiProvider,
+  EventSearch,
   MarketCard,
-  MarketSearch,
   MarketSparkline,
   Orderbook,
   ProbabilityDial,
@@ -208,7 +208,7 @@ export default function Page() {
           >
             <div className="demo-discover">
               <CategoryFilter value={category} onChange={setCategory} />
-              <MarketSearch
+              <EventSearch
                 category={category ?? undefined}
                 placeholder={`Search ${category ?? "all"} markets…`}
                 onSelect={(m) => focusHero(m.ticker)}

@@ -26,8 +26,7 @@ export interface OrderbookProps {
   data?: OrderbookData;
   /**
    * Called when a row is clicked. Wires the row as a `<button>` instead of
-   * a `<li>` when supplied. Styling of the button rows is kept neutral here;
-   * Sprint 3 polishes the interaction visuals.
+   * a `<li>` when supplied. Styling of the button rows is kept neutral here.
    */
   onLevelClick?: (level: OrderbookLevel, side: "yes" | "no") => void;
   /** Override YES/NO colors for this orderbook only. */
