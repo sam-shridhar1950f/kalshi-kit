@@ -9,9 +9,11 @@ import {
 } from "@kalshi-kit/react";
 
 const PRESETS = [
+  { ticker: "KXATPMATCH-26MAY15SINMED-MED", label: "ATP · Sinner v Medvedev" },
+  { ticker: "KXPGATOUR-PGC26-JRAH", label: "PGA · Jon Rahm" },
   { ticker: "KXNBAGAME-26MAY15SASMIN-SAS", label: "NBA · SAS @ MIN" },
-  { ticker: "KXBTCD-26MAY1515-T79199.99", label: "BTC daily" },
-  { ticker: "KXEPLTOTAL-26MAY17AVLLFC-2", label: "EPL · Total" },
+  { ticker: "KXEPLGAME-26MAY17AVLLFC-AVL", label: "EPL · Villa v Liverpool" },
+  { ticker: "KXMLBGAME-26MAY152140SDSEA-SEA", label: "MLB · SD @ SEA" },
 ];
 
 const containerStyle: React.CSSProperties = {
