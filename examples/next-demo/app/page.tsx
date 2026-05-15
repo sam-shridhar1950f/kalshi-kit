@@ -132,7 +132,7 @@ export default function Page() {
         <main className="demo-main">
           {/* ───── Hero ───── */}
           <section className="demo-hero" ref={heroRef}>
-            <span className="demo-hero__eyebrow">v0 · MIT · React 18+</span>
+            <span className="demo-hero__eyebrow">v0.1.0 · MIT · React 18+</span>
             <h1 className="demo-hero__title">
               Drop-in React components
               <br />
@@ -226,7 +226,7 @@ export default function Page() {
           <Section
             kicker="Events"
             title="Multi-outcome markets, one fetch"
-            description="EventCard pairs with EventMarketList to render an event header and its child markets as ranked rows. Both consume the same useEvent() hook."
+            description="Some markets have many possible outcomes. Render the event header and a ranked list of every option, side by side, from a single fetch."
           >
             <div className="demo-event">
               <div className="demo-event__col demo-event__col--card">
