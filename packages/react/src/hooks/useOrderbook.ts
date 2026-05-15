@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
 import { useKalshi } from "../provider";
 import { normalizeOrderbook } from "../normalize";
 import type { OrderbookData } from "../types";
+import { usePolledResource } from "./usePolledResource";
 
 export interface UseOrderbookOptions {
   /** How often to refetch, in milliseconds. Default 1500. */
@@ -24,55 +24,21 @@ export function useOrderbook(
 ): UseOrderbookResult {
   const { pollIntervalMs = 1500, depth = 10, enabled = true } = options;
   const client = useKalshi();
-  const [orderbook, setOrderbook] = useState<OrderbookData | null>(null);
-  const [error, setError] = useState<Error | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    setOrderbook(null);
-    setError(null);
-    setIsLoading(true);
-  }, [ticker]);
-
-  useEffect(() => {
-    if (!enabled || !ticker) {
-      setIsLoading(false);
-      return;
-    }
-
-    let cancelled = false;
-    let timer: ReturnType<typeof setTimeout> | null = null;
-
-    async function tick() {
-      try {
-        // Server caps `depth` at 100; clamp to avoid wasted bytes.
-        const serverDepth = Math.min(Math.max(depth, 1), 100);
-        const response = await client.fetch<Record<string, unknown>>(
-          `/markets/${encodeURIComponent(ticker)}/orderbook?depth=${serverDepth}`,
-        );
-        if (cancelled) return;
-        setOrderbook(normalizeOrderbook(response, depth));
-        setError(null);
-      } catch (e) {
-        if (cancelled) return;
-        setError(e instanceof Error ? e : new Error(String(e)));
-      } finally {
-        if (!cancelled) {
-          setIsLoading(false);
-          if (pollIntervalMs > 0) {
-            timer = setTimeout(tick, pollIntervalMs);
-          }
-        }
-      }
-    }
-
-    tick();
-
-    return () => {
-      cancelled = true;
-      if (timer) clearTimeout(timer);
-    };
-  }, [ticker, pollIntervalMs, depth, enabled, client]);
-
-  return { orderbook, isLoading, error };
+  // Server caps `depth` at 100; clamp to avoid wasted bytes.
+  const serverDepth = Math.min(Math.max(depth, 1), 100);
+  // Fold depth into the key so changes reset state cleanly.
+  const key = `${ticker}|${depth}`;
+  const { data, isLoading, error } = usePolledResource<OrderbookData>({
+    key,
+    pollIntervalMs,
+    enabled: enabled && !!ticker,
+    fetch: async (signal) => {
+      const response = await client.fetch<Record<string, unknown>>(
+        `/markets/${encodeURIComponent(ticker)}/orderbook?depth=${serverDepth}`,
+        { signal },
+      );
+      return normalizeOrderbook(response, depth);
+    },
+  });
+  return { orderbook: data, isLoading, error };
 }

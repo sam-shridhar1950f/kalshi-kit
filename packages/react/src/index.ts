@@ -24,6 +24,12 @@ export type {
 export { useTrades } from "./hooks/useTrades";
 export type { UseTradesOptions, UseTradesResult } from "./hooks/useTrades";
 
+export { usePolledResource } from "./hooks/usePolledResource";
+export type {
+  PolledResource,
+  UsePolledResourceOptions,
+} from "./hooks/usePolledResource";
+
 export type {
   Candlestick,
   Market,

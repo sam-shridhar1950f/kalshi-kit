@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
 import { useKalshi } from "../provider";
 import { normalizeCandlesticks } from "../normalize";
 import type { Candlestick } from "../types";
+import { usePolledResource } from "./usePolledResource";
 
 export type CandlestickInterval = 1 | 60 | 1440;
 
@@ -32,6 +32,8 @@ function deriveSeriesTicker(ticker: string): string {
   return idx === -1 ? ticker : ticker.slice(0, idx);
 }
 
+const EMPTY: Candlestick[] = [];
+
 export function useCandlesticks(
   ticker: string,
   options: UseCandlesticksOptions = {},
@@ -45,68 +47,30 @@ export function useCandlesticks(
   } = options;
 
   const client = useKalshi();
-  const [candles, setCandles] = useState<Candlestick[]>([]);
-  const [error, setError] = useState<Error | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const seriesTicker = seriesTickerOpt ?? deriveSeriesTicker(ticker);
+  const periodSeconds = interval * 60;
+  // Fold every input into the key so changes reset state cleanly.
+  const key = `${ticker}|${seriesTicker}|${interval}|${limit}`;
 
-  useEffect(() => {
-    setCandles([]);
-    setError(null);
-    setIsLoading(true);
-  }, [ticker]);
+  const { data, isLoading, error } = usePolledResource<Candlestick[]>({
+    key,
+    pollIntervalMs,
+    enabled: enabled && !!ticker && !!seriesTicker,
+    fetch: async (signal) => {
+      const now = Math.floor(Date.now() / 1000);
+      const start = now - limit * periodSeconds;
+      const path =
+        `/series/${encodeURIComponent(seriesTicker)}` +
+        `/markets/${encodeURIComponent(ticker)}/candlesticks` +
+        `?period_interval=${interval}` +
+        `&start_ts=${start}` +
+        `&end_ts=${now}`;
+      const response = await client.fetch<Record<string, unknown>>(path, {
+        signal,
+      });
+      return normalizeCandlesticks(response, periodSeconds);
+    },
+  });
 
-  useEffect(() => {
-    if (!enabled || !ticker) {
-      setIsLoading(false);
-      return;
-    }
-
-    const seriesTicker = seriesTickerOpt ?? deriveSeriesTicker(ticker);
-    if (!seriesTicker) {
-      setError(new Error(`Could not derive series ticker from "${ticker}"`));
-      setIsLoading(false);
-      return;
-    }
-
-    let cancelled = false;
-    let timer: ReturnType<typeof setTimeout> | null = null;
-    const periodSeconds = interval * 60;
-
-    async function tick() {
-      try {
-        const now = Math.floor(Date.now() / 1000);
-        const start = now - limit * periodSeconds;
-        const path =
-          `/series/${encodeURIComponent(seriesTicker)}` +
-          `/markets/${encodeURIComponent(ticker)}/candlesticks` +
-          `?period_interval=${interval}` +
-          `&start_ts=${start}` +
-          `&end_ts=${now}`;
-
-        const response = await client.fetch<Record<string, unknown>>(path);
-        if (cancelled) return;
-        setCandles(normalizeCandlesticks(response, periodSeconds));
-        setError(null);
-      } catch (e) {
-        if (cancelled) return;
-        setError(e instanceof Error ? e : new Error(String(e)));
-      } finally {
-        if (!cancelled) {
-          setIsLoading(false);
-          if (pollIntervalMs > 0) {
-            timer = setTimeout(tick, pollIntervalMs);
-          }
-        }
-      }
-    }
-
-    tick();
-
-    return () => {
-      cancelled = true;
-      if (timer) clearTimeout(timer);
-    };
-  }, [ticker, interval, limit, pollIntervalMs, enabled, seriesTickerOpt, client]);
-
-  return { candles, isLoading, error };
+  return { candles: data ?? EMPTY, isLoading, error };
 }

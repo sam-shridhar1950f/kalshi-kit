@@ -18,6 +18,11 @@ export interface KalshiClientConfig {
 
 export interface KalshiClient {
   baseUrl: string;
+  /**
+   * Fetch JSON from the Kalshi API. `init` is spread onto the underlying
+   * `fetch` call, so callers can pass an `AbortSignal` to cancel in-flight
+   * requests (e.g. from `usePolledResource`).
+   */
   fetch: <T>(path: string, init?: RequestInit) => Promise<T>;
 }
 

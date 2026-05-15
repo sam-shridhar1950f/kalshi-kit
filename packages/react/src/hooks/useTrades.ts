@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
 import { useKalshi } from "../provider";
 import { normalizeTrades } from "../normalize";
 import type { Trade } from "../types";
+import { usePolledResource } from "./usePolledResource";
 
 export interface UseTradesOptions {
   /** How many recent trades to keep. Default 20. */
@@ -18,59 +18,29 @@ export interface UseTradesResult {
   error: Error | null;
 }
 
+const EMPTY: Trade[] = [];
+
 export function useTrades(
   ticker: string,
   options: UseTradesOptions = {},
 ): UseTradesResult {
   const { limit = 20, pollIntervalMs = 3000, enabled = true } = options;
   const client = useKalshi();
-  const [trades, setTrades] = useState<Trade[]>([]);
-  const [error, setError] = useState<Error | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const key = `${ticker}|${limit}`;
 
-  useEffect(() => {
-    setTrades([]);
-    setError(null);
-    setIsLoading(true);
-  }, [ticker]);
+  const { data, isLoading, error } = usePolledResource<Trade[]>({
+    key,
+    pollIntervalMs,
+    enabled: enabled && !!ticker,
+    fetch: async (signal) => {
+      const path =
+        `/markets/trades?ticker=${encodeURIComponent(ticker)}&limit=${limit}`;
+      const response = await client.fetch<Record<string, unknown>>(path, {
+        signal,
+      });
+      return normalizeTrades(response);
+    },
+  });
 
-  useEffect(() => {
-    if (!enabled || !ticker) {
-      setIsLoading(false);
-      return;
-    }
-
-    let cancelled = false;
-    let timer: ReturnType<typeof setTimeout> | null = null;
-
-    async function tick() {
-      try {
-        const path =
-          `/markets/trades?ticker=${encodeURIComponent(ticker)}&limit=${limit}`;
-        const response = await client.fetch<Record<string, unknown>>(path);
-        if (cancelled) return;
-        setTrades(normalizeTrades(response));
-        setError(null);
-      } catch (e) {
-        if (cancelled) return;
-        setError(e instanceof Error ? e : new Error(String(e)));
-      } finally {
-        if (!cancelled) {
-          setIsLoading(false);
-          if (pollIntervalMs > 0) {
-            timer = setTimeout(tick, pollIntervalMs);
-          }
-        }
-      }
-    }
-
-    tick();
-
-    return () => {
-      cancelled = true;
-      if (timer) clearTimeout(timer);
-    };
-  }, [ticker, limit, pollIntervalMs, enabled, client]);
-
-  return { trades, isLoading, error };
+  return { trades: data ?? EMPTY, isLoading, error };
 }
