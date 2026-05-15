@@ -29,6 +29,12 @@ export function useTrades(
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    setTrades([]);
+    setError(null);
+    setIsLoading(true);
+  }, [ticker]);
+
+  useEffect(() => {
     if (!enabled || !ticker) {
       setIsLoading(false);
       return;

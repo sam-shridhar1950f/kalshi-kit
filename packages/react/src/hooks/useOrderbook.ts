@@ -29,6 +29,12 @@ export function useOrderbook(
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    setOrderbook(null);
+    setError(null);
+    setIsLoading(true);
+  }, [ticker]);
+
+  useEffect(() => {
     if (!enabled || !ticker) {
       setIsLoading(false);
       return;

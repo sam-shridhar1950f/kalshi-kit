@@ -30,6 +30,14 @@ export function useMarket(
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Clear stale data immediately when the ticker changes so the UI doesn't
+  // briefly show a previous market while the new fetch is in flight.
+  useEffect(() => {
+    setMarket(null);
+    setError(null);
+    setIsLoading(true);
+  }, [ticker]);
+
   useEffect(() => {
     if (!enabled || !ticker) {
       setIsLoading(false);

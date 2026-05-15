@@ -50,6 +50,12 @@ export function useCandlesticks(
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    setCandles([]);
+    setError(null);
+    setIsLoading(true);
+  }, [ticker]);
+
+  useEffect(() => {
     if (!enabled || !ticker) {
       setIsLoading(false);
       return;

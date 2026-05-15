@@ -38,7 +38,6 @@ async function createChartInstance(
     );
     const chart = mod.createChart(container, {
       autoSize: true,
-      height,
       layout: {
         background: { color: "transparent" },
         textColor: isDark ? "#a1a1aa" : "#71717a",
@@ -70,7 +69,7 @@ async function createChartInstance(
 
     return {
       remove: () => chart.remove(),
-      setData: (rows) =>
+      setData: (rows) => {
         series.setData(
           rows.map((r) => ({
             time: r.time as unknown as import("lightweight-charts").UTCTimestamp,
@@ -79,7 +78,14 @@ async function createChartInstance(
             low: r.low,
             close: r.close,
           })),
-        ),
+        );
+        // Force the price scale to recompute against the new data range.
+        // Toggling autoScale off→on is the v4 workaround for setData not
+        // always rescaling when the new data sits in a different range.
+        const ps = series.priceScale();
+        ps.applyOptions({ autoScale: false });
+        ps.applyOptions({ autoScale: true });
+      },
       fitContent: () => chart.timeScale().fitContent(),
     };
   } catch {
@@ -138,9 +144,13 @@ export function CandlestickChart({
   }, [height]);
 
   useEffect(() => {
-    if (!handlesRef.current || candles.length === 0) return;
+    if (!handlesRef.current) return;
+    // Always call setData — passing [] clears the chart when the ticker
+    // changes and the hook hasn't fetched fresh candles yet.
     handlesRef.current.setData(candles);
-    handlesRef.current.fitContent();
+    if (candles.length > 0) {
+      handlesRef.current.fitContent();
+    }
   }, [candles]);
 
   const rootClass = ["kk-chart", className].filter(Boolean).join(" ");
