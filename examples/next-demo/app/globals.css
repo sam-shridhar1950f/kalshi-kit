@@ -1,3 +1,5 @@
+/* ---------- Base ---------- */
+
 * {
   box-sizing: border-box;
 }
@@ -6,28 +8,224 @@ html,
 body {
   margin: 0;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
-  background: #f9fafb;
+  background: #fafafa;
   color: #09090b;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  /*
+   * Use the kit's own font feature settings so tabular figures line up across
+   * the page (sparkline numbers next to body text, etc).
+   */
+  font-feature-settings: "ss01" on, "cv11" on;
 }
 
 a {
   color: inherit;
 }
 
-code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    "Liberation Mono", "Courier New", monospace;
-  font-size: 0.95em;
+code,
+pre {
+  font-family: ui-monospace, SFMono-Regular, "JetBrains Mono", Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.92em;
+}
+
+/*
+ * Drive the demo's background, text, and accent surfaces off the kit's theme
+ * attribute. The KalshiProvider sets data-kk-theme="light|dark" on a wrapping
+ * div — we read that attribute and re-skin the page chrome to match. This
+ * keeps the toggle on the page in lockstep with every kit component, no
+ * separate state needed.
+ */
+.kk-provider[data-kk-theme="light"] {
+  --demo-bg: #fafafa;
+  --demo-bg-elevated: #ffffff;
+  --demo-text: #09090b;
+  --demo-text-muted: #71717a;
+  --demo-text-subtle: #a1a1aa;
+  --demo-border: #e4e4e7;
+  --demo-border-strong: #d4d4d8;
+  --demo-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 1px rgba(0, 0, 0, 0.03);
+  --demo-shadow-lg: 0 10px 30px -10px rgba(0, 0, 0, 0.12);
+  --demo-pill-bg: #ffffff;
+  --demo-pill-active-bg: #09090b;
+  --demo-pill-active-fg: #ffffff;
+  --demo-code-bg: #f4f4f5;
+  --demo-code-fg: #09090b;
+  --demo-accent: #2563eb;
+}
+
+.kk-provider[data-kk-theme="dark"] {
+  --demo-bg: #0a0a0c;
+  --demo-bg-elevated: #111114;
+  --demo-text: #fafafa;
+  --demo-text-muted: #a1a1aa;
+  --demo-text-subtle: #71717a;
+  --demo-border: #27272a;
+  --demo-border-strong: #3f3f46;
+  --demo-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --demo-shadow-lg: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+  --demo-pill-bg: transparent;
+  --demo-pill-active-bg: #fafafa;
+  --demo-pill-active-fg: #09090b;
+  --demo-code-bg: #18181b;
+  --demo-code-fg: #fafafa;
+  --demo-accent: #60a5fa;
+}
+
+.demo-root {
+  background: var(--demo-bg, #fafafa);
+  color: var(--demo-text, #09090b);
+  min-height: 100vh;
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+/* ---------- Nav ---------- */
+
+.demo-nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 32px;
+  border-bottom: 1px solid var(--demo-border);
+  background: color-mix(in oklab, var(--demo-bg) 85%, transparent);
+  backdrop-filter: saturate(160%) blur(12px);
+  -webkit-backdrop-filter: saturate(160%) blur(12px);
+}
+
+.demo-nav__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.demo-nav__logo {
+  display: inline-flex;
+  width: 22px;
+  height: 22px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #10b981 0%, #2563eb 100%);
+  color: white;
+  font-size: 11px;
+  line-height: 1;
+}
+
+.demo-nav__name {
+  font-feature-settings: "ss01" on;
+}
+
+.demo-nav__right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.demo-nav__link {
+  font-size: 13px;
+  color: var(--demo-text-muted);
+  text-decoration: none;
+  transition: color 120ms ease;
+}
+
+.demo-nav__link:hover {
+  color: var(--demo-text);
+}
+
+.demo-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px 5px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--demo-border);
+  background: var(--demo-pill-bg);
+  color: var(--demo-text);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+
+.demo-theme-toggle:hover {
+  border-color: var(--demo-border-strong);
+}
+
+.demo-theme-toggle__label {
+  font-feature-settings: "tnum" 1;
+}
+
+/* ---------- Main / hero ---------- */
+
+.demo-main {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 56px 32px 96px;
+  display: flex;
+  flex-direction: column;
+  gap: 96px;
+}
+
+.demo-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.demo-hero__eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--demo-text-muted);
+}
+
+.demo-hero__title {
+  font-size: clamp(40px, 6vw, 64px);
+  line-height: 1.05;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  margin: 0;
+}
+
+.demo-hero__lede {
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--demo-text-muted);
+  max-width: 640px;
+  margin: 0;
+}
+
+.demo-hero__pkg {
+  display: inline-block;
+  padding: 2px 8px;
+  margin-left: 6px;
+  border-radius: 6px;
+  background: var(--demo-code-bg);
+  color: var(--demo-code-fg);
+  font-size: 13px;
+}
+
+.demo-picker {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
 .demo-pill {
-  border: 1px solid #e4e4e7;
-  background: white;
-  color: #09090b;
+  border: 1px solid var(--demo-border);
+  background: var(--demo-pill-bg);
+  color: var(--demo-text);
   border-radius: 999px;
   padding: 6px 14px;
   font-size: 13px;
@@ -37,60 +235,239 @@ code {
 }
 
 .demo-pill:hover {
-  border-color: #a1a1aa;
+  border-color: var(--demo-border-strong);
 }
 
 .demo-pill--active {
-  border-color: #09090b;
-  background: #09090b;
-  color: white;
+  border-color: var(--demo-pill-active-bg);
+  background: var(--demo-pill-active-bg);
+  color: var(--demo-pill-active-fg);
 }
 
 .demo-input {
   flex: 1;
   min-width: 240px;
-  padding: 6px 12px;
-  border: 1px solid #e4e4e7;
+  padding: 7px 12px;
+  border: 1px solid var(--demo-border);
   border-radius: 999px;
   font-size: 13px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  background: white;
-  color: #09090b;
+  background: var(--demo-pill-bg);
+  color: var(--demo-text);
   outline: none;
   transition: border-color 120ms ease;
 }
 
 .demo-input:focus {
-  border-color: #09090b;
+  border-color: var(--demo-text);
 }
 
-@media (prefers-color-scheme: dark) {
-  html,
-  body {
-    background: #050507;
-    color: #fafafa;
+.demo-hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.demo-hero__chart,
+.demo-hero__feed {
+  width: 100%;
+}
+
+/* ---------- Sections ---------- */
+
+.demo-section {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.demo-section__header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 640px;
+}
+
+.demo-section__kicker {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--demo-accent);
+}
+
+.demo-section__title {
+  font-size: clamp(28px, 3.5vw, 36px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin: 0;
+  line-height: 1.15;
+}
+
+.demo-section__desc {
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--demo-text-muted);
+  margin: 0;
+  max-width: 560px;
+}
+
+/* ---------- Trending grid ---------- */
+
+.demo-trending {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.demo-trending__card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border: 1px solid var(--demo-border);
+  border-radius: 16px;
+  background: var(--demo-bg-elevated);
+  padding: 14px;
+  box-shadow: var(--demo-shadow);
+  transition: border-color 120ms ease, transform 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.demo-trending__card:hover {
+  border-color: var(--demo-border-strong);
+  transform: translateY(-1px);
+  box-shadow: var(--demo-shadow-lg);
+}
+
+/*
+ * Strip the kit's MarketCard border/shadow inside the trending grid — the
+ * wrapper card already provides chrome. We keep the kit's tokens and layout
+ * intact, only nulling the redundant border so the surfaces don't double-up.
+ */
+.demo-trending__card .kk-card {
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  padding: 0;
+}
+
+.demo-trending__spark {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ---------- Event ---------- */
+
+.demo-event {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.demo-event__col--card .kk-card {
+  min-height: 100%;
+}
+
+/* ---------- Install ---------- */
+
+.demo-install-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.demo-install {
+  background: var(--demo-bg-elevated);
+  border: 1px solid var(--demo-border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--demo-shadow);
+  display: flex;
+  flex-direction: column;
+}
+
+.demo-install__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--demo-border);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--demo-text-muted);
+}
+
+.demo-install__copy {
+  border: 1px solid var(--demo-border);
+  background: var(--demo-pill-bg);
+  color: var(--demo-text);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: border-color 120ms ease;
+}
+
+.demo-install__copy:hover {
+  border-color: var(--demo-border-strong);
+}
+
+.demo-install__pre {
+  margin: 0;
+  padding: 16px;
+  background: var(--demo-code-bg);
+  color: var(--demo-code-fg);
+  font-size: 12.5px;
+  line-height: 1.55;
+  overflow-x: auto;
+  flex: 1;
+}
+
+/* ---------- Footer ---------- */
+
+.demo-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 32px;
+  border-top: 1px solid var(--demo-border);
+  font-size: 12px;
+  color: var(--demo-text-subtle);
+}
+
+.demo-footer code {
+  color: var(--demo-text-muted);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 880px) {
+  .demo-main {
+    padding: 32px 20px 64px;
+    gap: 64px;
   }
 
-  .demo-pill {
-    border-color: #27272a;
-    background: transparent;
-    color: #fafafa;
-  }
-  .demo-pill:hover {
-    border-color: #52525b;
-  }
-  .demo-pill--active {
-    border-color: #fafafa;
-    background: #fafafa;
-    color: #09090b;
+  .demo-hero__grid,
+  .demo-event {
+    grid-template-columns: 1fr;
   }
 
-  .demo-input {
-    border-color: #27272a;
-    background: transparent;
-    color: #fafafa;
+  .demo-trending,
+  .demo-install-grid {
+    grid-template-columns: 1fr;
   }
-  .demo-input:focus {
-    border-color: #fafafa;
+
+  .demo-nav {
+    padding: 12px 20px;
+  }
+
+  .demo-nav__right {
+    gap: 12px;
   }
 }
