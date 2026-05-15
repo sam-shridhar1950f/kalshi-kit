@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useMarket } from "../hooks/useMarket";
+import { formatCents } from "../format";
 import type { Market } from "../types";
 
 export interface MarketCardProps {
@@ -61,7 +62,7 @@ export function MarketCard({
   const { market, isLoading, error } = useMarket(ticker, { pollIntervalMs });
   const rootClass = ["kk-card", className].filter(Boolean).join(" ");
 
-  const yesPrice = market ? Math.round(market.yes_bid) : 0;
+  const yesPrice = market ? market.yes_bid : 0;
   const noPrice = market ? Math.max(0, 100 - yesPrice) : 0;
   const yesFlash = usePriceFlash(yesPrice);
   const noFlash = usePriceFlash(noPrice);
@@ -107,11 +108,11 @@ export function MarketCard({
       <div className="kk-prices">
         <div className={yesClass}>
           <span className="kk-price__label">YES</span>
-          <span className="kk-price__value">{yesPrice}¢</span>
+          <span className="kk-price__value">{formatCents(yesPrice)}</span>
         </div>
         <div className={noClass}>
           <span className="kk-price__label">NO</span>
-          <span className="kk-price__value">{noPrice}¢</span>
+          <span className="kk-price__value">{formatCents(noPrice)}</span>
         </div>
       </div>
       {!hideFooter ? (

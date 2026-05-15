@@ -25,7 +25,9 @@ function num(value: unknown): number {
 }
 
 function dollarsToCents(value: unknown): number {
-  return Math.round(num(value) * 100);
+  // Preserve sub-cent precision for fractional markets (0.1¢ steps).
+  // Multiply by 1000, round to integer tenths-of-a-cent, divide by 10.
+  return Math.round(num(value) * 1000) / 10;
 }
 
 function pickPrice(

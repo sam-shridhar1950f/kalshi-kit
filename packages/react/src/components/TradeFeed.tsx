@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTrades } from "../hooks/useTrades";
+import { formatCents } from "../format";
 
 export interface TradeFeedProps {
   ticker: string;
@@ -92,7 +93,7 @@ export function TradeFeed({
                 className={`kk-feed__row kk-feed__row--${t.takerSide}`}
               >
                 <span className="kk-feed__side">{t.takerSide.toUpperCase()}</span>
-                <span className="kk-feed__price">{price}¢</span>
+                <span className="kk-feed__price">{formatCents(price)}</span>
                 <span className="kk-feed__size">
                   ×{t.count.toLocaleString()}
                 </span>

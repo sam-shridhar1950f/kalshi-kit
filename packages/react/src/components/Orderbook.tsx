@@ -1,4 +1,5 @@
 import { useOrderbook } from "../hooks/useOrderbook";
+import { formatCents } from "../format";
 import type { OrderbookLevel } from "../types";
 
 export interface OrderbookProps {
@@ -50,7 +51,7 @@ function Side({ side, levels, ceiling }: SideProps) {
                 }}
                 aria-hidden
               />
-              <span className="kk-book__row-price">{level.price}¢</span>
+              <span className="kk-book__row-price">{formatCents(level.price)}</span>
               <span className="kk-book__row-size">
                 {level.size.toLocaleString()}
               </span>

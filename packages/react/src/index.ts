@@ -1,4 +1,5 @@
 export { createClient, KalshiApiError } from "./client";
+export { formatCents } from "./format";
 export type { KalshiClient, KalshiClientConfig } from "./client";
 
 export { KalshiProvider, useKalshi } from "./provider";
