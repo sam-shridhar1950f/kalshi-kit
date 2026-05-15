@@ -139,8 +139,8 @@ export default function Page() {
               for prediction markets.
             </h1>
             <p className="demo-hero__lede">
-              Production-grade market cards, orderbooks, charts, and feeds wired
-              to Kalshi&apos;s live API. SSR-ready. Theme-aware.
+              Market cards, orderbooks, charts, and feeds wired to
+              Kalshi&apos;s live API. SSR-ready. Theme-aware.
               <code className="demo-hero__pkg">
                 {" "}
                 npm install @kalshi-kit/react
