@@ -8,6 +8,7 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   treeshake: true,
+  external: ["next", "next/server"],
   outExtension({ format }) {
     return { js: format === "cjs" ? ".cjs" : ".js" };
   },
