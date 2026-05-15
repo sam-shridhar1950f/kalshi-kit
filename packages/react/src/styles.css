@@ -210,6 +210,170 @@ button.kk-card:focus-visible,
   }
 }
 
+/* ----- Trade feed ----- */
+
+.kk-feed {
+  --kk-bg: #ffffff;
+  --kk-text: #09090b;
+  --kk-text-muted: #71717a;
+  --kk-border: #e4e4e7;
+  --kk-yes: #16a34a;
+  --kk-yes-bg: #f0fdf4;
+  --kk-no: #dc2626;
+  --kk-no-bg: #fef2f2;
+  --kk-radius: 12px;
+  --kk-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 1px rgba(0, 0, 0, 0.03);
+  --kk-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+
+  background: var(--kk-bg);
+  border: 1px solid var(--kk-border);
+  border-radius: var(--kk-radius);
+  box-shadow: var(--kk-shadow);
+  padding: 12px;
+  font-family: var(--kk-font);
+  color: var(--kk-text);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.kk-feed__heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0 4px 8px;
+  border-bottom: 1px solid var(--kk-border);
+}
+
+.kk-feed__title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--kk-text-muted);
+}
+
+.kk-feed__heading-cols {
+  display: grid;
+  grid-template-columns: 40px 56px 56px 44px;
+  gap: 8px;
+  text-align: right;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--kk-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.kk-feed__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.kk-feed__row {
+  display: grid;
+  grid-template-columns: 40px 1fr 56px 44px;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 4px;
+  font-size: 13px;
+  font-feature-settings: "tnum" 1;
+}
+
+.kk-feed__side {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.kk-feed__row--yes .kk-feed__side {
+  background: var(--kk-yes-bg);
+  color: var(--kk-yes);
+}
+
+.kk-feed__row--no .kk-feed__side {
+  background: var(--kk-no-bg);
+  color: var(--kk-no);
+}
+
+.kk-feed__price {
+  text-align: right;
+  font-weight: 600;
+}
+
+.kk-feed__row--yes .kk-feed__price {
+  color: var(--kk-yes);
+}
+.kk-feed__row--no .kk-feed__price {
+  color: var(--kk-no);
+}
+
+.kk-feed__size {
+  text-align: right;
+  color: var(--kk-text-muted);
+}
+
+.kk-feed__time {
+  text-align: right;
+  color: var(--kk-text-muted);
+  font-size: 12px;
+}
+
+.kk-feed__empty {
+  padding: 12px 4px;
+  font-size: 12px;
+  color: var(--kk-text-muted);
+  text-align: center;
+}
+
+.kk-feed--error {
+  border-color: var(--kk-no);
+}
+
+/* ----- Candlestick chart ----- */
+
+.kk-chart {
+  position: relative;
+  background: var(--kk-bg, #ffffff);
+  border: 1px solid var(--kk-border, #e4e4e7);
+  border-radius: var(--kk-radius, 12px);
+  box-shadow: var(--kk-shadow, 0 1px 2px rgba(0, 0, 0, 0.04));
+  padding: 12px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.kk-chart__canvas {
+  width: 100%;
+}
+
+.kk-chart__overlay {
+  position: absolute;
+  inset: 12px;
+  border-radius: var(--kk-radius-sm, 8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .kk-chart {
+    --kk-bg: #09090b;
+    --kk-border: #27272a;
+    --kk-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  }
+}
+
 /* ----- Orderbook ----- */
 
 .kk-book {
@@ -362,7 +526,8 @@ button.kk-card:focus-visible,
 
 @media (prefers-color-scheme: dark) {
   .kk-card,
-  .kk-book {
+  .kk-book,
+  .kk-feed {
     --kk-bg: #09090b;
     --kk-text: #fafafa;
     --kk-text-muted: #a1a1aa;

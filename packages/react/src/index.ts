@@ -13,11 +13,23 @@ export type {
   UseOrderbookResult,
 } from "./hooks/useOrderbook";
 
+export { useCandlesticks } from "./hooks/useCandlesticks";
 export type {
+  CandlestickInterval,
+  UseCandlesticksOptions,
+  UseCandlesticksResult,
+} from "./hooks/useCandlesticks";
+
+export { useTrades } from "./hooks/useTrades";
+export type { UseTradesOptions, UseTradesResult } from "./hooks/useTrades";
+
+export type {
+  Candlestick,
   Market,
   MarketStatus,
   OrderbookData,
   OrderbookLevel,
+  Trade,
 } from "./types";
 
 export { MarketCard } from "./components/MarketCard";
@@ -25,5 +37,11 @@ export type { MarketCardProps } from "./components/MarketCard";
 
 export { Orderbook } from "./components/Orderbook";
 export type { OrderbookProps } from "./components/Orderbook";
+
+export { CandlestickChart } from "./components/CandlestickChart";
+export type { CandlestickChartProps } from "./components/CandlestickChart";
+
+export { TradeFeed } from "./components/TradeFeed";
+export type { TradeFeedProps } from "./components/TradeFeed";
 
 export const VERSION = "0.0.1";

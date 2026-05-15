@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { MarketCard, Orderbook } from "@kalshi-kit/react";
+import {
+  CandlestickChart,
+  MarketCard,
+  Orderbook,
+  TradeFeed,
+} from "@kalshi-kit/react";
 
 const PRESETS = [
   { ticker: "KXNBAGAME-26MAY15SASMIN-SAS", label: "NBA · SAS @ MIN" },
@@ -78,6 +83,10 @@ export default function Page() {
         <MarketCard ticker={ticker} />
         <Orderbook ticker={ticker} depth={6} />
       </div>
+
+      <CandlestickChart ticker={ticker} interval={60} height={320} />
+
+      <TradeFeed ticker={ticker} limit={15} />
 
       <details>
         <summary

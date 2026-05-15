@@ -10,6 +10,7 @@
   "dependencies": {
     "@kalshi-kit/next": "workspace:*",
     "@kalshi-kit/react": "workspace:*",
+    "lightweight-charts": "^4.2.3",
     "next": "^14.2.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

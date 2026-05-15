@@ -28,7 +28,7 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   treeshake: true,
-  external: ["react", "react-dom"],
+  external: ["react", "react-dom", "lightweight-charts"],
   outExtension({ format }) {
     return { js: format === "cjs" ? ".cjs" : ".js" };
   },

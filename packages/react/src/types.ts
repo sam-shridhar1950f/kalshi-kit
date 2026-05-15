@@ -59,3 +59,31 @@ export interface OrderbookData {
   /** Best bid first. */
   no: OrderbookLevel[];
 }
+
+export interface Candlestick {
+  /** Unix timestamp in seconds at the START of the candle period. */
+  time: number;
+  /** OHLC in cents (0–100). */
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  /** Whole contracts traded in the period. */
+  volume: number;
+}
+
+export interface Trade {
+  id: string;
+  ticker: string;
+  /** ISO timestamp. */
+  createdAt: string;
+  count: number;
+  /** Cents, 0–100. */
+  yesPrice: number;
+  /** Cents, 0–100. */
+  noPrice: number;
+  /** Which outcome the taker chose. */
+  takerSide: "yes" | "no";
+  /** Whether the taker hit the bid or lifted the ask. */
+  takerBookSide: "bid" | "ask";
+}

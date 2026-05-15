@@ -27,10 +27,17 @@
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
-    "react": ">=18"
+    "react": ">=18",
+    "lightweight-charts": "^4.2.0"
+  },
+  "peerDependenciesMeta": {
+    "lightweight-charts": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/react": "^18.2.0",
+    "lightweight-charts": "^4.2.3",
     "react": "^18.2.0",
     "tsup": "^8.0.2",
     "typescript": "^5.4.5"

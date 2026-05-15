@@ -7,7 +7,13 @@
  * these helpers absorb the shape difference so the components stay simple.
  */
 
-import type { Market, OrderbookData, OrderbookLevel } from "./types";
+import type {
+  Candlestick,
+  Market,
+  OrderbookData,
+  OrderbookLevel,
+  Trade,
+} from "./types";
 
 function num(value: unknown): number {
   if (typeof value === "number") return Number.isFinite(value) ? value : 0;
@@ -113,4 +119,77 @@ export function normalizeOrderbook(
     yes: normalizeSide(fp?.yes_dollars ?? legacy?.yes, depth),
     no: normalizeSide(fp?.no_dollars ?? legacy?.no, depth),
   };
+}
+
+/**
+ * Live shape returns candles with `end_period_ts` and nested `price.{open,close,high,low}_dollars`.
+ * lightweight-charts wants `time` at the START of the candle, so we shift by `periodSeconds`.
+ * The synthetic prepended candle (returned when `include_latest_before_start=true`)
+ * has all OHLC null — we drop those.
+ */
+export function normalizeCandlesticks(
+  raw: unknown,
+  periodSeconds: number,
+): Candlestick[] {
+  if (!raw || typeof raw !== "object") return [];
+  const list = (raw as { candlesticks?: unknown[] }).candlesticks;
+  if (!Array.isArray(list)) return [];
+
+  const out: Candlestick[] = [];
+  for (const c of list) {
+    if (!c || typeof c !== "object") continue;
+    const entry = c as {
+      end_period_ts?: number;
+      volume_fp?: unknown;
+      price?: {
+        open_dollars?: unknown;
+        high_dollars?: unknown;
+        low_dollars?: unknown;
+        close_dollars?: unknown;
+      };
+    };
+    const endTs = num(entry.end_period_ts);
+    if (!endTs || !entry.price) continue;
+
+    const open = entry.price.open_dollars;
+    const high = entry.price.high_dollars;
+    const low = entry.price.low_dollars;
+    const close = entry.price.close_dollars;
+    if (open == null || high == null || low == null || close == null) continue;
+
+    out.push({
+      time: endTs - periodSeconds,
+      open: dollarsToCents(open),
+      high: dollarsToCents(high),
+      low: dollarsToCents(low),
+      close: dollarsToCents(close),
+      volume: Math.round(num(entry.volume_fp)),
+    });
+  }
+  // Ensure strictly ascending time for lightweight-charts.
+  out.sort((a, b) => a.time - b.time);
+  return out;
+}
+
+export function normalizeTrades(raw: unknown): Trade[] {
+  if (!raw || typeof raw !== "object") return [];
+  const list = (raw as { trades?: unknown[] }).trades;
+  if (!Array.isArray(list)) return [];
+
+  const out: Trade[] = [];
+  for (const t of list) {
+    if (!t || typeof t !== "object") continue;
+    const entry = t as Record<string, unknown>;
+    out.push({
+      id: String(entry.trade_id ?? ""),
+      ticker: String(entry.ticker ?? ""),
+      createdAt: String(entry.created_time ?? ""),
+      count: Math.round(num(entry.count_fp ?? entry.count)),
+      yesPrice: dollarsToCents(entry.yes_price_dollars ?? entry.yes_price),
+      noPrice: dollarsToCents(entry.no_price_dollars ?? entry.no_price),
+      takerSide: entry.taker_outcome_side === "no" ? "no" : "yes",
+      takerBookSide: entry.taker_book_side === "ask" ? "ask" : "bid",
+    });
+  }
+  return out;
 }
