@@ -18,30 +18,6 @@ const containerStyle: React.CSSProperties = {
   gap: 32,
 };
 
-const pillStyle = (active: boolean): React.CSSProperties => ({
-  border: active ? "1px solid #09090b" : "1px solid #e4e4e7",
-  background: active ? "#09090b" : "white",
-  color: active ? "white" : "#09090b",
-  borderRadius: 999,
-  padding: "6px 14px",
-  fontSize: 13,
-  fontWeight: 500,
-  cursor: "pointer",
-  transition: "background 120ms ease, color 120ms ease, border-color 120ms ease",
-});
-
-const inputStyle: React.CSSProperties = {
-  flex: 1,
-  minWidth: 240,
-  padding: "6px 12px",
-  border: "1px solid #e4e4e7",
-  borderRadius: 999,
-  fontSize: 13,
-  fontFamily:
-    "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
-  outline: "none",
-};
-
 export default function Page() {
   const [ticker, setTicker] = useState(PRESETS[0]!.ticker);
 
@@ -77,7 +53,7 @@ export default function Page() {
             key={p.ticker}
             type="button"
             onClick={() => setTicker(p.ticker)}
-            style={pillStyle(ticker === p.ticker)}
+            className={`demo-pill${ticker === p.ticker ? " demo-pill--active" : ""}`}
           >
             {p.label}
           </button>
@@ -87,7 +63,7 @@ export default function Page() {
           onChange={(e) => setTicker(e.target.value)}
           spellCheck={false}
           placeholder="any Kalshi ticker"
-          style={inputStyle}
+          className="demo-input"
         />
       </section>
 
@@ -96,6 +72,7 @@ export default function Page() {
           display: "grid",
           gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)",
           gap: 16,
+          alignItems: "start",
         }}
       >
         <MarketCard ticker={ticker} />

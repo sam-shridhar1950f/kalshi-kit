@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { useMarket } from "../hooks/useMarket";
 import type { Market } from "../types";
 
@@ -30,6 +31,26 @@ function formatCloseTime(iso: string | undefined): string {
   });
 }
 
+/**
+ * Briefly returns "up" or "down" when `value` changes so a parent can apply
+ * a flash class. Resets to null after 700ms.
+ */
+function usePriceFlash(value: number): "up" | "down" | null {
+  const [flash, setFlash] = useState<"up" | "down" | null>(null);
+  const prev = useRef<number>(value);
+
+  useEffect(() => {
+    if (value === prev.current) return;
+    const direction = value > prev.current ? "up" : "down";
+    prev.current = value;
+    setFlash(direction);
+    const t = setTimeout(() => setFlash(null), 700);
+    return () => clearTimeout(t);
+  }, [value]);
+
+  return flash;
+}
+
 export function MarketCard({
   ticker,
   className,
@@ -39,6 +60,11 @@ export function MarketCard({
 }: MarketCardProps) {
   const { market, isLoading, error } = useMarket(ticker, { pollIntervalMs });
   const rootClass = ["kk-card", className].filter(Boolean).join(" ");
+
+  const yesPrice = market ? Math.round(market.yes_bid) : 0;
+  const noPrice = market ? Math.max(0, 100 - yesPrice) : 0;
+  const yesFlash = usePriceFlash(yesPrice);
+  const noFlash = usePriceFlash(noPrice);
 
   if (isLoading && !market) {
     return (
@@ -63,8 +89,12 @@ export function MarketCard({
     );
   }
 
-  const yesPrice = Math.round(market.yes_bid);
-  const noPrice = Math.max(0, 100 - yesPrice);
+  const yesClass = `kk-price kk-price--yes${
+    yesFlash ? ` kk-price--flash-${yesFlash}` : ""
+  }`;
+  const noClass = `kk-price kk-price--no${
+    noFlash ? ` kk-price--flash-${noFlash}` : ""
+  }`;
 
   const content = (
     <>
@@ -75,11 +105,11 @@ export function MarketCard({
         ) : null}
       </div>
       <div className="kk-prices">
-        <div className="kk-price kk-price--yes">
+        <div className={yesClass}>
           <span className="kk-price__label">YES</span>
           <span className="kk-price__value">{yesPrice}¢</span>
         </div>
-        <div className="kk-price kk-price--no">
+        <div className={noClass}>
           <span className="kk-price__label">NO</span>
           <span className="kk-price__value">{noPrice}¢</span>
         </div>
