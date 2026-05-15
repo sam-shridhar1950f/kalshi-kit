@@ -1,0 +1,118 @@
+import { useMarket } from "../hooks/useMarket";
+import type { Market } from "../types";
+
+export interface MarketCardProps {
+  ticker: string;
+  /** Override or extend the root element className. */
+  className?: string;
+  /** Polling interval in ms. Set to 0 to disable. Default 5000. */
+  pollIntervalMs?: number;
+  /** Called when the card is clicked; renders as a `<button>` when supplied. */
+  onSelect?: (market: Market) => void;
+  /** Hide the footer row (volume, status, close date). */
+  hideFooter?: boolean;
+}
+
+function formatVolume(n: number): string {
+  if (!Number.isFinite(n)) return "—";
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`;
+  return n.toLocaleString();
+}
+
+function formatCloseTime(iso: string | undefined): string {
+  if (!iso) return "";
+  const t = Date.parse(iso);
+  if (Number.isNaN(t)) return "";
+  return new Date(t).toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+  });
+}
+
+export function MarketCard({
+  ticker,
+  className,
+  pollIntervalMs,
+  onSelect,
+  hideFooter,
+}: MarketCardProps) {
+  const { market, isLoading, error } = useMarket(ticker, { pollIntervalMs });
+  const rootClass = ["kk-card", className].filter(Boolean).join(" ");
+
+  if (isLoading && !market) {
+    return (
+      <div className={rootClass} aria-busy="true">
+        <div className="kk-skeleton kk-skeleton--title" />
+        <div className="kk-prices">
+          <div className="kk-skeleton kk-skeleton--pill" />
+          <div className="kk-skeleton kk-skeleton--pill" />
+        </div>
+        {!hideFooter && <div className="kk-skeleton kk-skeleton--line" />}
+      </div>
+    );
+  }
+
+  if (error || !market) {
+    return (
+      <div className={`${rootClass} kk-card--error`} role="alert">
+        <p className="kk-card__error-text">
+          {error?.message ?? `Market ${ticker} not found`}
+        </p>
+      </div>
+    );
+  }
+
+  const yesPrice = Math.round(market.yes_bid);
+  const noPrice = Math.max(0, 100 - yesPrice);
+
+  const content = (
+    <>
+      <div className="kk-card__header">
+        <h3 className="kk-card__title">{market.title}</h3>
+        {market.subtitle ? (
+          <p className="kk-card__subtitle">{market.subtitle}</p>
+        ) : null}
+      </div>
+      <div className="kk-prices">
+        <div className="kk-price kk-price--yes">
+          <span className="kk-price__label">YES</span>
+          <span className="kk-price__value">{yesPrice}¢</span>
+        </div>
+        <div className="kk-price kk-price--no">
+          <span className="kk-price__label">NO</span>
+          <span className="kk-price__value">{noPrice}¢</span>
+        </div>
+      </div>
+      {!hideFooter ? (
+        <div className="kk-card__footer">
+          <span className="kk-card__stat">
+            {formatVolume(market.volume)} vol
+          </span>
+          <span className={`kk-status kk-status--${market.status}`}>
+            {market.status}
+          </span>
+          {market.close_time ? (
+            <span className="kk-card__stat">
+              closes {formatCloseTime(market.close_time)}
+            </span>
+          ) : null}
+        </div>
+      ) : null}
+    </>
+  );
+
+  if (onSelect) {
+    return (
+      <button
+        type="button"
+        className={`${rootClass} kk-card--interactive`}
+        onClick={() => onSelect(market)}
+      >
+        {content}
+      </button>
+    );
+  }
+
+  return <div className={rootClass}>{content}</div>;
+}
