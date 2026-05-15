@@ -23,4 +23,7 @@ export type {
 export { MarketCard } from "./components/MarketCard";
 export type { MarketCardProps } from "./components/MarketCard";
 
+export { Orderbook } from "./components/Orderbook";
+export type { OrderbookProps } from "./components/Orderbook";
+
 export const VERSION = "0.0.1";
