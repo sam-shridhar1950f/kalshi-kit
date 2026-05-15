@@ -23,30 +23,47 @@ export interface UseMarketSearchResult {
   error: Error | null;
 }
 
-interface MarketsResponse {
-  markets?: Array<Record<string, unknown>>;
+interface EventsResponse {
+  events?: Array<{
+    event_ticker?: string;
+    title?: string;
+    sub_title?: string;
+    category?: string;
+    series_ticker?: string;
+    markets?: Array<Record<string, unknown>>;
+  }>;
 }
 
 const EMPTY: Market[] = [];
 
 /**
- * Kalshi's `/markets` endpoint accepts a `q=` parameter but (as of May 2026)
- * silently ignores it — the response is the same regardless of the term.
- * So we always fetch a wider page of open markets and filter client-side.
- * Cap the server-side page at 200 to keep payload bounded; users still get
- * up to `limit` results via local substring matching.
+ * We search `/events?with_nested_markets=true` rather than `/markets` because:
+ *
+ * 1. The flat `/markets` listing is *dominated* by auto-generated multivariate
+ *    combo markets (`KXMVE…`) whose titles read like
+ *    "yes Player A: 4+,yes Player B: 1+,…" — even with `mve_filter=exclude`
+ *    the first 200 non-MVE markets are typically state-primary entries; real
+ *    user-facing markets ("Will Trump…", "Who will the next Pope be?", NFL
+ *    games, etc.) live on `/events`.
+ * 2. `/events` returns the canonical user-readable title once per event, and
+ *    each event carries its child markets inline when we ask for them.
+ *
+ * For each matching event we return its first child market — that ticker is
+ * what `<MarketCard>`/`<Orderbook>`/etc. will fetch when the demo plugs the
+ * selection into the hero. The result type stays `Market[]` so consumers
+ * don't have to learn a new shape.
  */
+// 200 events covers political/news/world categories well. Sports event-level
+// matches (NFL/golf/tennis) live deeper into the paginated index and aren't
+// surfaced today — power users can pre-filter by passing `seriesTicker`.
 const SERVER_FETCH_CAP = 200;
 
-function matchesQuery(market: Market, needle: string): boolean {
+function matchesEvent(
+  event: { event_ticker?: string; title?: string; sub_title?: string },
+  needle: string,
+): boolean {
   if (!needle) return true;
-  const haystack = [
-    market.ticker,
-    market.title,
-    market.yes_sub_title ?? "",
-    market.no_sub_title ?? "",
-    market.event_ticker,
-  ]
+  const haystack = [event.title ?? "", event.sub_title ?? "", event.event_ticker ?? ""]
     .join(" ")
     .toLowerCase();
   return haystack.includes(needle);
@@ -92,27 +109,39 @@ export function useMarketSearch(
     fetch: async (signal) => {
       const params = new URLSearchParams();
       params.set("status", "open");
-      params.set("limit", String(Math.min(SERVER_FETCH_CAP, 200)));
+      params.set("limit", String(SERVER_FETCH_CAP));
+      params.set("with_nested_markets", "true");
       if (seriesTicker) params.set("series_ticker", seriesTicker);
-      // We still pass `q` — harmless if ignored, useful if Kalshi turns it on.
-      params.set("q", trimmed);
 
-      const response = await client.fetch<MarketsResponse>(
-        `/markets?${params.toString()}`,
+      const response = await client.fetch<EventsResponse>(
+        `/events?${params.toString()}`,
         { signal },
       );
-      const raw = Array.isArray(response.markets) ? response.markets : [];
-      const normalized = raw.map((m) => normalizeMarket(m));
+      const events = Array.isArray(response.events) ? response.events : [];
 
-      const filtered = normalized.filter((m) => {
-        if (category && (m as Market & { category?: string }).category) {
-          const cat = (m as Market & { category?: string }).category;
-          if (cat && cat.toLowerCase() !== category.toLowerCase()) return false;
+      const out: Market[] = [];
+      for (const event of events) {
+        if (!matchesEvent(event, needle)) continue;
+        if (
+          category &&
+          event.category &&
+          event.category.toLowerCase() !== category.toLowerCase()
+        ) {
+          continue;
         }
-        return matchesQuery(m, needle);
-      });
-
-      return filtered.slice(0, limit);
+        const firstMarket = event.markets?.[0];
+        if (!firstMarket) continue;
+        const market = normalizeMarket(firstMarket);
+        // Show the event title in the dropdown — it's the user-readable
+        // phrasing, while individual market titles often duplicate it.
+        if (event.title) {
+          out.push({ ...market, title: event.title });
+        } else {
+          out.push(market);
+        }
+        if (out.length >= limit) break;
+      }
+      return out;
     },
   });
 
