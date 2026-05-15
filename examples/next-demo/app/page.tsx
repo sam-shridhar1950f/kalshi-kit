@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import {
   CandlestickChart,
   CategoryFilter,
@@ -80,7 +80,19 @@ export default function Page() {
   const [range, setRange] = useState<TimeRange>("1d");
   const [category, setCategory] = useState<string | null>(null);
 
+  const heroRef = useRef<HTMLElement | null>(null);
+
   const { interval, limit } = rangeToCandleParams(range);
+
+  // When a market is picked from search or the trending grid, the hero may be
+  // off-screen. Smooth-scroll it back into view so the user actually sees the
+  // re-render they triggered.
+  const focusHero = useCallback((nextTicker: string) => {
+    setTicker(nextTicker);
+    if (typeof window !== "undefined") {
+      heroRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, []);
 
   return (
     <KalshiProvider theme={theme}>
@@ -119,7 +131,7 @@ export default function Page() {
 
         <main className="demo-main">
           {/* ───── Hero ───── */}
-          <section className="demo-hero">
+          <section className="demo-hero" ref={heroRef}>
             <span className="demo-hero__eyebrow">v0 · MIT · React 18+</span>
             <h1 className="demo-hero__title">
               Drop-in React components
@@ -199,13 +211,13 @@ export default function Page() {
               <MarketSearch
                 category={category ?? undefined}
                 placeholder={`Search ${category ?? "all"} markets…`}
-                onSelect={(m) => setTicker(m.ticker)}
+                onSelect={(m) => focusHero(m.ticker)}
                 limit={8}
               />
             </div>
             <div className="demo-trending">
               {TRENDING_TICKERS.map((t) => (
-                <TrendingCard key={t} ticker={t} onSelect={setTicker} />
+                <TrendingCard key={t} ticker={t} onSelect={focusHero} />
               ))}
             </div>
           </Section>
