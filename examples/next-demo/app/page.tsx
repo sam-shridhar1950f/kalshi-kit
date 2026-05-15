@@ -3,40 +3,41 @@
 import { useState } from "react";
 import {
   CandlestickChart,
+  CategoryFilter,
+  CountdownTimer,
   EventCard,
   EventMarketList,
   ExchangeStatusBadge,
   KalshiProvider,
   MarketCard,
+  MarketSearch,
   MarketSparkline,
   Orderbook,
+  ProbabilityDial,
+  ShareCard,
+  TimeRangeSelector,
+  TradeButton,
   TradeFeed,
+  WatchlistButton,
+  rangeToCandleParams,
+  useMarket,
   type KalshiTheme,
+  type TimeRange,
 } from "@kalshi-kit/react";
 
 import { InstallCard } from "./_components/InstallCard";
+import { PresetSelector, type PresetName } from "./_components/PresetSelector";
 import { Section } from "./_components/Section";
 import { ThemeToggle } from "./_components/ThemeToggle";
 
-/**
- * Hero ticker picker. A diverse mix of sports / esports / crypto so the demo
- * exercises a range of real markets. The first ticker is the default. Picked
- * from `/markets/trades` top-volume scan on the day of authoring; markets
- * close, so the page tolerates 404s gracefully via the kit's error states.
- */
 const HERO_TICKERS = [
-  { ticker: "KXNFLAFCCHAMP-27-CIN", label: "NFL · AFC Champ · CIN" },
+  { ticker: "KXNFLAFCCHAMP-27-CIN", label: "NFL · AFC · CIN" },
   { ticker: "KXPGATOUR-PGC26-SSCH", label: "PGA · Scheffler" },
   { ticker: "KXMLBGAME-26MAY151910MILMIN-MIL", label: "MLB · MIL @ MIN" },
   { ticker: "KXITFMATCH-26MAY15PRIDEL-DEL", label: "Tennis · Del Pino" },
   { ticker: "KXCS2GAME-26MAY151630VITNAVI-VIT", label: "CS2 · Vitality" },
 ];
 
-/**
- * Trending grid: 6 tickers covering golf, soccer, racing, crypto-ladder, and
- * politics/news so the MarketSparkline section reads as breadth. The BTC
- * ladder ticker exercises fractional-cent display (e.g. 8.5¢).
- */
 const TRENDING_TICKERS = [
   "KXMLBTOTAL-26MAY152040AZCOL-12",
   "KXAPFDDHGAME-26MAY15TRICPO-CPO",
@@ -46,7 +47,6 @@ const TRENDING_TICKERS = [
   "KXTRUMPMENTIONB-26MAY15-CRYP",
 ];
 
-/** Multi-outcome event with a clear shared narrative across markets. */
 const FEATURED_EVENT = "KXNEWPOPE-70";
 
 const INSTALL_SNIPPETS = [
@@ -75,11 +75,16 @@ export default function Page() {
 
 export default function Page() {
   const [theme, setTheme] = useState<KalshiTheme>("system");
+  const [preset, setPreset] = useState<PresetName>("default");
   const [ticker, setTicker] = useState(HERO_TICKERS[0]!.ticker);
+  const [range, setRange] = useState<TimeRange>("1d");
+  const [category, setCategory] = useState<string | null>(null);
+
+  const { interval, limit } = rangeToCandleParams(range);
 
   return (
     <KalshiProvider theme={theme}>
-      <div className="demo-root">
+      <div className="demo-root" data-preset={preset}>
         <header className="demo-nav">
           <div className="demo-nav__brand">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -93,7 +98,7 @@ export default function Page() {
           <div className="demo-nav__right">
             <a
               className="demo-nav__link"
-              href="https://github.com"
+              href="https://github.com/sam-shridhar1950f/kalshi-kit"
               target="_blank"
               rel="noreferrer"
             >
@@ -107,6 +112,7 @@ export default function Page() {
             >
               npm
             </a>
+            <PresetSelector value={preset} onChange={setPreset} />
             <ThemeToggle theme={theme} onChange={setTheme} />
           </div>
         </header>
@@ -121,8 +127,8 @@ export default function Page() {
               for prediction markets.
             </h1>
             <p className="demo-hero__lede">
-              Production-grade market cards, orderbooks, charts, and feeds
-              wired to Kalshi&apos;s live API. SSR-ready. Theme-aware.
+              Production-grade market cards, orderbooks, charts, and feeds wired
+              to Kalshi&apos;s live API. SSR-ready. Theme-aware.
               <code className="demo-hero__pkg">
                 {" "}
                 npm install @kalshi-kit/react
@@ -149,33 +155,57 @@ export default function Page() {
               />
             </div>
 
-            <div className="demo-hero__grid">
-              <div className="demo-hero__col">
+            {/* Top row: probability dial + market card */}
+            <div className="demo-hero__top">
+              <div className="demo-hero__dial-col">
+                <ProbabilityDial ticker={ticker} size={160} strokeWidth={14} />
+                <DialCountdown ticker={ticker} />
+                <div className="demo-hero__cta-row">
+                  <TradeButton ticker={ticker} side="yes" />
+                  <TradeButton ticker={ticker} side="no" variant="ghost" />
+                </div>
+              </div>
+              <div className="demo-hero__card-col">
                 <MarketCard ticker={ticker} />
               </div>
-              <div className="demo-hero__col">
-                <Orderbook ticker={ticker} depth={6} />
-              </div>
             </div>
 
-            <div className="demo-hero__chart">
-              <CandlestickChart ticker={ticker} interval={60} height={300} />
+            {/* Full-width orderbook */}
+            <Orderbook ticker={ticker} depth={6} layout="split" />
+
+            {/* Chart with time-range selector */}
+            <div className="demo-hero__chart-wrap">
+              <TimeRangeSelector value={range} onChange={setRange} />
+              <CandlestickChart
+                key={`${ticker}-${preset}-${range}`}
+                ticker={ticker}
+                interval={interval}
+                limit={limit}
+                height={320}
+              />
             </div>
 
-            <div className="demo-hero__feed">
-              <TradeFeed ticker={ticker} limit={10} />
-            </div>
+            <TradeFeed ticker={ticker} limit={10} />
           </section>
 
-          {/* ───── Trending markets / sparklines ───── */}
+          {/* ───── Discover ───── */}
           <Section
-            kicker="Sparklines"
-            title="Trending markets"
-            description="Tiny SVG charts that share one fetch with the surrounding card. Drop into a list and the kit handles polling, layout, and fractional-cent formatting."
+            kicker="Discover"
+            title="Search and filter live markets"
+            description="MarketSearch debounces input and queries /markets. CategoryFilter is a controlled pill row. Pick a result and the hero re-renders to it."
           >
+            <div className="demo-discover">
+              <CategoryFilter value={category} onChange={setCategory} />
+              <MarketSearch
+                category={category ?? undefined}
+                placeholder={`Search ${category ?? "all"} markets…`}
+                onSelect={(m) => setTicker(m.ticker)}
+                limit={8}
+              />
+            </div>
             <div className="demo-trending">
               {TRENDING_TICKERS.map((t) => (
-                <TrendingCard key={t} ticker={t} />
+                <TrendingCard key={t} ticker={t} onSelect={setTicker} />
               ))}
             </div>
           </Section>
@@ -212,6 +242,12 @@ export default function Page() {
                 />
               ))}
             </div>
+            <div className="demo-share">
+              <ShareCard
+                ticker={ticker}
+                title="Live demo of @kalshi-kit/react"
+              />
+            </div>
           </Section>
 
           <footer className="demo-footer">
@@ -219,8 +255,8 @@ export default function Page() {
               Data <code>api.elections.kalshi.com</code> · MIT · v0 preview
             </span>
             <span>
-              Built by trading-tools people who didn&apos;t want to rebuild
-              this again.
+              Built by trading-tools people who didn&apos;t want to rebuild this
+              again.
             </span>
           </footer>
         </main>
@@ -229,27 +265,55 @@ export default function Page() {
   );
 }
 
-interface TrendingCardProps {
+interface DialCountdownProps {
   ticker: string;
 }
 
-/**
- * A compact card showing market title, last price, and a sparkline. We call
- * useMarket via MarketCard? No — we want a single visual unit with the
- * sparkline embedded. So we use MarketCard's `data` prop pattern by inlining
- * a tiny composition: MarketCard with hideFooter, plus a sparkline below.
- *
- * Each TrendingCard issues its own fetch (one per market). For a real app the
- * parent would batch-fetch with the proxy and pass `data={}` — but for the
- * demo we let each card poll independently so the "trending" section
- * genuinely updates.
- */
-function TrendingCard({ ticker }: TrendingCardProps) {
+function DialCountdown({ ticker }: DialCountdownProps) {
+  // Hooked in via useMarket so the countdown reads the same close_time the
+  // dial is showing. When the market is missing or already closed, we render
+  // nothing rather than blocking the layout.
+  const { market } = useMarket(ticker);
+  if (!market?.close_time) return null;
   return (
-    <div className="demo-trending__card">
+    <div className="demo-countdown">
+      <span className="demo-countdown__label">closes in</span>
+      <CountdownTimer to={market.close_time} elapsedText="Closed" />
+    </div>
+  );
+}
+
+interface TrendingCardProps {
+  ticker: string;
+  onSelect: (ticker: string) => void;
+}
+
+function TrendingCard({ ticker, onSelect }: TrendingCardProps) {
+  return (
+    <div
+      className="demo-trending__card"
+      onClick={() => onSelect(ticker)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onSelect(ticker);
+        }
+      }}
+    >
+      <div className="demo-trending__top">
+        <WatchlistButton ticker={ticker} size={16} />
+      </div>
       <MarketCard ticker={ticker} hideFooter />
       <div className="demo-trending__spark">
-        <MarketSparkline ticker={ticker} interval={60} limit={24} height={36} width={220} />
+        <MarketSparkline
+          ticker={ticker}
+          interval={60}
+          limit={24}
+          height={36}
+          width={220}
+        />
       </div>
     </div>
   );

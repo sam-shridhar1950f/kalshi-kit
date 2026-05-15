@@ -451,6 +451,7 @@ pre {
   }
 
   .demo-hero__grid,
+  .demo-hero__top,
   .demo-event {
     grid-template-columns: 1fr;
   }
@@ -466,5 +467,232 @@ pre {
 
   .demo-nav__right {
     gap: 12px;
+  }
+}
+
+/* ============================================================ *
+ * Wave A/B/C integration — preset selector, new hero, discover  *
+ * ============================================================ */
+
+/* Color presets. `[data-preset]` rules win over the kit's theme rules at
+ * equal specificity because globals.css is imported AFTER styles.css. */
+
+.demo-root[data-preset="solana"] .kk {
+  --kk-yes: #14f195;
+  --kk-yes-bg: rgba(20, 241, 149, 0.14);
+  --kk-no: #9945ff;
+  --kk-no-bg: rgba(153, 69, 255, 0.14);
+}
+
+.demo-root[data-preset="sportsbook"] .kk {
+  --kk-yes: #2563eb;
+  --kk-yes-bg: rgba(37, 99, 235, 0.1);
+  --kk-no: #dc2626;
+  --kk-no-bg: rgba(220, 38, 38, 0.1);
+}
+
+.demo-root[data-preset="sunset"] .kk {
+  --kk-yes: #f97316;
+  --kk-yes-bg: rgba(249, 115, 22, 0.12);
+  --kk-no: #ec4899;
+  --kk-no-bg: rgba(236, 72, 153, 0.12);
+}
+
+.demo-root[data-preset="mono"] .kk {
+  --kk-yes: #18181b;
+  --kk-yes-bg: #f4f4f5;
+  --kk-no: #71717a;
+  --kk-no-bg: #fafafa;
+}
+
+.kk-provider[data-kk-theme="dark"] .demo-root[data-preset="mono"] .kk {
+  --kk-yes: #fafafa;
+  --kk-yes-bg: rgba(250, 250, 250, 0.06);
+  --kk-no: #71717a;
+  --kk-no-bg: rgba(113, 113, 122, 0.12);
+}
+
+/* ---------- Preset dropdown ---------- */
+
+.demo-preset {
+  position: relative;
+  font-feature-settings: "tnum" 1;
+}
+
+.demo-preset__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px 5px 6px;
+  border-radius: 999px;
+  border: 1px solid var(--demo-border);
+  background: var(--demo-pill-bg);
+  color: var(--demo-text);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 120ms ease;
+}
+
+.demo-preset__trigger:hover {
+  border-color: var(--demo-border-strong);
+}
+
+.demo-preset__swatch {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.demo-preset__label {
+  min-width: 60px;
+  text-align: left;
+}
+
+.demo-preset__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  background: var(--demo-bg-elevated);
+  border: 1px solid var(--demo-border);
+  border-radius: 10px;
+  box-shadow: var(--demo-shadow-lg);
+  min-width: 160px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.demo-preset__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  outline: none;
+}
+
+.demo-preset__item:hover,
+.demo-preset__item:focus-visible {
+  background: color-mix(in oklab, var(--demo-text) 6%, transparent);
+}
+
+.demo-preset__item--active {
+  background: color-mix(in oklab, var(--demo-text) 8%, transparent);
+}
+
+/* ---------- New hero layout (probability dial + market card) ---------- */
+
+.demo-hero__top {
+  display: grid;
+  grid-template-columns: minmax(260px, 360px) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.demo-hero__dial-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 20px;
+  background: var(--demo-bg-elevated);
+  border: 1px solid var(--demo-border);
+  border-radius: 16px;
+  box-shadow: var(--demo-shadow);
+}
+
+.demo-hero__cta-row {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.demo-hero__cta-row > * {
+  flex: 1;
+}
+
+.demo-hero__card-col {
+  display: flex;
+}
+
+.demo-hero__card-col > * {
+  width: 100%;
+}
+
+.demo-countdown {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--demo-text-muted);
+  font-feature-settings: "tnum" 1;
+}
+
+.demo-countdown__label {
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+}
+
+.demo-hero__chart-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ---------- Discover section ---------- */
+
+.demo-discover {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ---------- Trending card upgrades (watchlist star + clickable) ---------- */
+
+.demo-trending__card {
+  position: relative;
+  cursor: pointer;
+  transition: transform 120ms ease, border-color 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.demo-trending__card:hover {
+  transform: translateY(-2px);
+  border-color: var(--demo-border-strong);
+  box-shadow: var(--demo-shadow-lg);
+}
+
+.demo-trending__top {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+}
+
+/* ---------- Share area ---------- */
+
+.demo-share {
+  margin-top: 16px;
+}
+
+/* ---------- Responsive overrides for the new hero layout ---------- */
+
+@media (max-width: 880px) {
+  .demo-hero__top {
+    grid-template-columns: 1fr;
+  }
+  .demo-hero__dial-col {
+    padding: 16px;
   }
 }
