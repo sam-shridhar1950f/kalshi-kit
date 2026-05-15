@@ -89,4 +89,19 @@ export type { EventMarketListProps } from "./components/EventMarketList";
 export { MarketSparkline } from "./components/MarketSparkline";
 export type { MarketSparklineProps } from "./components/MarketSparkline";
 
+export { ProbabilityDial } from "./components/ProbabilityDial";
+export type { ProbabilityDialProps } from "./components/ProbabilityDial";
+
+export { CountdownTimer } from "./components/CountdownTimer";
+export type { CountdownTimerProps } from "./components/CountdownTimer";
+
+export {
+  TimeRangeSelector,
+  rangeToCandleParams,
+} from "./components/TimeRangeSelector";
+export type {
+  TimeRange,
+  TimeRangeSelectorProps,
+} from "./components/TimeRangeSelector";
+
 export const VERSION = "0.0.1";

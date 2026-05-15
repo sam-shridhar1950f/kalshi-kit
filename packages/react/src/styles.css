@@ -979,6 +979,123 @@ button.kk-book__row:focus-visible {
   overflow: visible;
 }
 
+/* ---------- Wave A: ProbabilityDial / CountdownTimer / TimeRangeSelector ---------- */
+
+.kk-dial {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--kk-font);
+  color: var(--kk-text);
+  box-sizing: border-box;
+}
+
+.kk-dial__svg {
+  display: block;
+}
+
+.kk-dial__arc {
+  /* Smoothly animates as the YES probability changes. */
+  transition: stroke-dashoffset 400ms ease-out;
+}
+
+.kk-dial__center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  line-height: 1;
+}
+
+.kk-dial__value {
+  display: inline-flex;
+  align-items: baseline;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--kk-text);
+  font-feature-settings: "tnum" 1;
+}
+
+.kk-dial__unit {
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: 2px;
+  color: var(--kk-text-muted);
+}
+
+.kk-dial__label {
+  margin-top: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--kk-yes);
+}
+
+.kk-countdown {
+  display: inline-block;
+  font-family: var(--kk-font);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--kk-text);
+  font-feature-settings: "tnum" 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.kk-countdown--elapsed {
+  color: var(--kk-text-muted);
+}
+
+.kk-range-row {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--kk-space-1);
+  font-family: var(--kk-font);
+}
+
+.kk-range-pill {
+  border: 1px solid var(--kk-border);
+  background: transparent;
+  color: var(--kk-text-muted);
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition:
+    background-color var(--kk-duration-fast) ease,
+    color var(--kk-duration-fast) ease,
+    border-color var(--kk-duration-fast) ease;
+  font-family: inherit;
+}
+
+.kk-range-pill:hover {
+  border-color: var(--kk-border-hover);
+  color: var(--kk-text);
+}
+
+.kk-range-pill:focus-visible {
+  outline: 2px solid var(--kk-focus);
+  outline-offset: 2px;
+}
+
+.kk-range-pill--active {
+  background: var(--kk-text);
+  border-color: var(--kk-text);
+  color: var(--kk-bg);
+}
+
+.kk-range-pill--active:hover {
+  border-color: var(--kk-text);
+  color: var(--kk-bg);
+}
+
 /* ---------- Reduced motion ---------- *
  * Honor `prefers-reduced-motion` for the kit's shimmer, flash, and hover
  * transitions. Skeleton stays visible; just stops animating.
@@ -998,7 +1115,9 @@ button.kk-book__row:focus-visible {
   button.kk-book__row,
   button.kk-feed__row,
   .kk-event-list__row,
-  .kk-event-list__bar {
+  .kk-event-list__bar,
+  .kk-dial__arc,
+  .kk-range-pill {
     transition: none !important;
   }
 }
