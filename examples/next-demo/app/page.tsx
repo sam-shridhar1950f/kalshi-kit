@@ -82,10 +82,12 @@ export default function Page() {
       <div className="demo-root">
         <header className="demo-nav">
           <div className="demo-nav__brand">
-            <span className="demo-nav__logo" aria-hidden>
-              ◆
-            </span>
-            <span className="demo-nav__name">kalshi-kit</span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo.png"
+              alt="kalshi-kit"
+              className="demo-nav__logo-img"
+            />
             <ExchangeStatusBadge />
           </div>
           <div className="demo-nav__right">

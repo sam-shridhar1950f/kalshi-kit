@@ -107,21 +107,18 @@ pre {
   letter-spacing: -0.01em;
 }
 
-.demo-nav__logo {
-  display: inline-flex;
-  width: 22px;
-  height: 22px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 6px;
-  background: linear-gradient(135deg, #10b981 0%, #2563eb 100%);
-  color: white;
-  font-size: 11px;
-  line-height: 1;
+.demo-nav__logo-img {
+  display: block;
+  height: 28px;
+  width: auto;
+  /* The wordmark ships with dark slate text that disappears against a
+   * dark page. We invert + hue-rotate in dark mode so the K-tile stays
+   * roughly green while the text reads white. */
+  transition: filter 200ms ease;
 }
 
-.demo-nav__name {
-  font-feature-settings: "ss01" on;
+.kk-provider[data-kk-theme="dark"] .demo-nav__logo-img {
+  filter: invert(1) hue-rotate(180deg);
 }
 
 .demo-nav__right {
