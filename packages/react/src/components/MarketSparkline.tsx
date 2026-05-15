@@ -2,6 +2,7 @@ import {
   useCandlesticks,
   type CandlestickInterval,
 } from "../hooks/useCandlesticks";
+import { colorsToStyle, type KalshiColors } from "../theme";
 import type { Candlestick } from "../types";
 
 export interface MarketSparklineProps {
@@ -20,6 +21,8 @@ export interface MarketSparklineProps {
   data?: Candlestick[];
   /** When true, render only the path (no baseline, no end marker). */
   hideAxis?: boolean;
+  /** Override stroke colors. Only `yes` (up) and `no` (down) are used. */
+  colors?: KalshiColors;
 }
 
 const PAD = 2;
@@ -69,7 +72,9 @@ export function MarketSparkline({
   width = 96,
   data,
   hideAxis,
+  colors,
 }: MarketSparklineProps) {
+  const colorStyle = colorsToStyle(colors);
   const hookResult = useCandlesticks(ticker ?? "", {
     interval,
     limit,
@@ -98,6 +103,7 @@ export function MarketSparkline({
       role="img"
       aria-label="price trend"
       preserveAspectRatio="none"
+      style={colorStyle}
     >
       {geom ? (
         <>

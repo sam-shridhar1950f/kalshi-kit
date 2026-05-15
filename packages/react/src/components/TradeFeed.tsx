@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTrades } from "../hooks/useTrades";
 import { formatCents } from "../format";
+import { colorsToStyle, type KalshiColors } from "../theme";
 import type { Trade } from "../types";
 
 export interface TradeFeedProps {
@@ -28,6 +29,8 @@ export interface TradeFeedProps {
    * supplied. Visual polish lands in Sprint 3.
    */
   onTradeClick?: (trade: Trade) => void;
+  /** Override YES/NO colors for this feed only. Falls back to the theme. */
+  colors?: KalshiColors;
 }
 
 function formatRelative(iso: string, now: number): string {
@@ -60,7 +63,9 @@ export function TradeFeed({
   heading = "Recent trades",
   data,
   onTradeClick,
+  colors,
 }: TradeFeedProps) {
+  const colorStyle = colorsToStyle(colors);
   const hookResult = useTrades(ticker ?? "", {
     limit,
     pollIntervalMs,
@@ -78,7 +83,7 @@ export function TradeFeed({
     // rows below at the same row height as real trades. Prevents layout
     // jump on data arrival.
     return (
-      <div className={rootClass} aria-busy="true">
+      <div className={rootClass} style={colorStyle} aria-busy="true">
         <div className="kk-feed__heading">
           <span className="kk-feed__title">{heading}</span>
           <span className="kk-feed__heading-cols">
@@ -101,14 +106,18 @@ export function TradeFeed({
 
   if (error) {
     return (
-      <div className={`${rootClass} kk-feed--error`} role="alert">
+      <div
+        className={`${rootClass} kk-feed--error`}
+        style={colorStyle}
+        role="alert"
+      >
         <p className="kk-card__error-text">{error.message}</p>
       </div>
     );
   }
 
   return (
-    <div className={rootClass}>
+    <div className={rootClass} style={colorStyle}>
       <div className="kk-feed__heading">
         <span className="kk-feed__title">{heading}</span>
         <span className="kk-feed__heading-cols">

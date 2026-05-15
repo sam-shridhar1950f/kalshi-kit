@@ -1,5 +1,6 @@
 import { useOrderbook } from "../hooks/useOrderbook";
 import { formatCents } from "../format";
+import { colorsToStyle, type KalshiColors } from "../theme";
 import type { OrderbookData, OrderbookLevel } from "../types";
 
 export interface OrderbookProps {
@@ -29,6 +30,8 @@ export interface OrderbookProps {
    * Sprint 3 polishes the interaction visuals.
    */
   onLevelClick?: (level: OrderbookLevel, side: "yes" | "no") => void;
+  /** Override YES/NO colors for this orderbook only. */
+  colors?: KalshiColors;
 }
 
 function maxSize(levels: OrderbookLevel[]): number {
@@ -115,7 +118,9 @@ export function Orderbook({
   layout = "stacked",
   data,
   onLevelClick,
+  colors,
 }: OrderbookProps) {
+  const colorStyle = colorsToStyle(colors);
   const hookResult = useOrderbook(ticker ?? "", {
     pollIntervalMs,
     depth,
@@ -158,7 +163,7 @@ export function Orderbook({
     );
 
     return (
-      <div className={rootClass} aria-busy="true">
+      <div className={rootClass} style={colorStyle} aria-busy="true">
         {skeletonSide("yes")}
         {skeletonSide("no")}
       </div>
@@ -167,7 +172,11 @@ export function Orderbook({
 
   if (error || !orderbook) {
     return (
-      <div className={`${rootClass} kk-book--error`} role="alert">
+      <div
+        className={`${rootClass} kk-book--error`}
+        style={colorStyle}
+        role="alert"
+      >
         <p className="kk-card__error-text">
           {error?.message ?? `Could not load orderbook for ${ticker ?? ""}`}
         </p>
@@ -179,7 +188,7 @@ export function Orderbook({
   const noCeiling = maxSize(orderbook.no);
 
   return (
-    <div className={rootClass}>
+    <div className={rootClass} style={colorStyle}>
       <Side
         side="yes"
         levels={orderbook.yes}

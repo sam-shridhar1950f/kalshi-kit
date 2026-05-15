@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useMarket } from "../hooks/useMarket";
 import { formatCents } from "../format";
+import { colorsToStyle, type KalshiColors } from "../theme";
 import type { Market } from "../types";
 
 export interface MarketCardProps {
@@ -26,6 +27,8 @@ export interface MarketCardProps {
    * parent fetch, and storybook fixtures.
    */
   data?: Market;
+  /** Override YES/NO colors for this card only. Falls back to the theme. */
+  colors?: KalshiColors;
 }
 
 function formatVolume(n: number): string {
@@ -72,7 +75,9 @@ export function MarketCard({
   onSelect,
   hideFooter,
   data,
+  colors,
 }: MarketCardProps) {
+  const colorStyle = colorsToStyle(colors);
   // When `data` is supplied we short-circuit the hook by passing `enabled: false`.
   // The hook keeps a stable signature; the unused tick/state work is trivial
   // but `enabled` makes intent explicit and prevents any network traffic.
@@ -93,7 +98,7 @@ export function MarketCard({
 
   if (isLoading && !market) {
     return (
-      <div className={rootClass} aria-busy="true">
+      <div className={rootClass} style={colorStyle} aria-busy="true">
         <div className="kk-skeleton kk-skeleton--title" />
         <div className="kk-prices">
           <div className="kk-skeleton kk-skeleton--pill" />
@@ -106,7 +111,11 @@ export function MarketCard({
 
   if (error || !market) {
     return (
-      <div className={`${rootClass} kk-card--error`} role="alert">
+      <div
+        className={`${rootClass} kk-card--error`}
+        style={colorStyle}
+        role="alert"
+      >
         <p className="kk-card__error-text">
           {error?.message ?? `Market ${ticker ?? ""} not found`}
         </p>
@@ -159,6 +168,7 @@ export function MarketCard({
       <button
         type="button"
         className={`${rootClass} kk-card--interactive`}
+        style={colorStyle}
         onClick={() => onSelect(market)}
       >
         {content}
@@ -166,5 +176,9 @@ export function MarketCard({
     );
   }
 
-  return <div className={rootClass}>{content}</div>;
+  return (
+    <div className={rootClass} style={colorStyle}>
+      {content}
+    </div>
+  );
 }
