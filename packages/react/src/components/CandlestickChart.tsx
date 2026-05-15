@@ -335,6 +335,11 @@ export const CandlestickChart = forwardRef<
       {isLoading && candles.length === 0 && !displayError ? (
         <div className="kk-skeleton kk-chart__overlay" />
       ) : null}
+      {!isLoading && candles.length === 0 && !displayError ? (
+        <div className="kk-chart__overlay kk-chart__overlay--empty">
+          <p className="kk-chart__empty-text">No price history yet</p>
+        </div>
+      ) : null}
       <div
         ref={containerRef}
         className="kk-chart__canvas"

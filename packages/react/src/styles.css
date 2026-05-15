@@ -54,16 +54,18 @@
     "Helvetica Neue", Arial, sans-serif;
 }
 
-/* ---------- Dark theme overrides ---------- *
- * Repeat the dark block twice on purpose: once for explicit `data-kk-theme="dark"`
- * and once inside a `prefers-color-scheme: dark` media query that excludes
- * explicit `data-kk-theme="light"`. The repetition keeps the override list
- * trivial to read; if it ever grows past a few lines, swap to custom-property
- * remapping. Behaviour:
- *   - theme="dark"   → always dark
- *   - theme="light"  → always light
- *   - theme="system" → follows OS (default when no data attribute is set)
- */
+/* ---------- Theme cascade ---------- *
+ * Light values live on `.kk` (above). The rules below apply in this order:
+ *   1. `[data-kk-theme="dark"] .kk` — explicit dark, specificity (0,2,0)
+ *   2. `@media (prefers-color-scheme: dark) .kk` — system dark fallback, (0,1,0)
+ *   3. `[data-kk-theme="light"] .kk` — explicit light, specificity (0,2,0)
+ *
+ * The trick: explicit-light is declared *after* the media query but with
+ * *higher specificity* than the media query's `.kk`, so when a user forces
+ * theme="light" on a system that prefers dark, the light values win cleanly.
+ * The earlier attempt at gating the media query with `:where(:not(...))`
+ * selectors didn't work because those check the element itself, not its
+ * ancestors. */
 
 [data-kk-theme="dark"] .kk,
 .kk[data-kk-theme="dark"] {
@@ -82,8 +84,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :where(:not([data-kk-theme="light"])) .kk:where(:not([data-kk-theme="light"])),
-  .kk:where(:not([data-kk-theme="light"])):where(:not([data-kk-theme="dark"])) {
+  .kk {
     --kk-bg: #09090b;
     --kk-text: #fafafa;
     --kk-text-muted: #a1a1aa;
@@ -97,6 +98,22 @@
     --kk-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
     --kk-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.5);
   }
+}
+
+[data-kk-theme="light"] .kk,
+.kk[data-kk-theme="light"] {
+  --kk-bg: #ffffff;
+  --kk-text: #09090b;
+  --kk-text-muted: #71717a;
+  --kk-border: #e4e4e7;
+  --kk-border-hover: #d4d4d8;
+  --kk-yes: #10b981;
+  --kk-yes-bg: #ecfdf5;
+  --kk-no: #f43f5e;
+  --kk-no-bg: #fff1f2;
+  --kk-focus: #2563eb;
+  --kk-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 1px rgba(0, 0, 0, 0.03);
+  --kk-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
 /* ---------- Card ---------- */
@@ -462,6 +479,18 @@ button.kk-feed__row:focus-visible {
   pointer-events: none;
 }
 
+.kk-chart__overlay--empty {
+  background: color-mix(in oklab, var(--kk-bg) 70%, transparent);
+}
+
+.kk-chart__empty-text {
+  margin: 0;
+  font-family: var(--kk-font);
+  font-size: 12px;
+  color: var(--kk-text-muted);
+  letter-spacing: 0.01em;
+}
+
 /* ---------- Orderbook ---------- */
 
 .kk-book {
@@ -677,36 +706,68 @@ button.kk-book__row:focus-visible {
 }
 
 @media (prefers-color-scheme: dark) {
-  :where(:not([data-kk-theme="light"])) .kk-status--active {
+  .kk-status--active {
     background: rgba(52, 211, 153, 0.15);
     color: #34d399;
   }
-  :where(:not([data-kk-theme="light"])) .kk-status--closed,
-  :where(:not([data-kk-theme="light"])) .kk-status--determined,
-  :where(:not([data-kk-theme="light"])) .kk-status--finalized,
-  :where(:not([data-kk-theme="light"])) .kk-status--inactive {
+  .kk-status--closed,
+  .kk-status--determined,
+  .kk-status--finalized,
+  .kk-status--inactive {
     background: rgba(161, 161, 170, 0.15);
     color: #a1a1aa;
   }
-  :where(:not([data-kk-theme="light"])) .kk-status--disputed,
-  :where(:not([data-kk-theme="light"])) .kk-status--amended {
+  .kk-status--disputed,
+  .kk-status--amended {
     background: rgba(251, 191, 36, 0.15);
     color: #fbbf24;
   }
-  :where(:not([data-kk-theme="light"])) .kk-status--initialized {
+  .kk-status--initialized {
     background: rgba(96, 165, 250, 0.15);
     color: #60a5fa;
   }
-  :where(:not([data-kk-theme="light"])) .kk-price--flash-up {
+  .kk-price--flash-up {
     background-color: rgba(52, 211, 153, 0.4);
   }
-  :where(:not([data-kk-theme="light"])) .kk-price--flash-down {
+  .kk-price--flash-down {
     background-color: rgba(251, 113, 133, 0.4);
   }
-  :where(:not([data-kk-theme="light"])) .kk-skeleton {
+  .kk-skeleton {
     background: linear-gradient(90deg, #18181b 0%, #27272a 50%, #18181b 100%);
     background-size: 200% 100%;
   }
+}
+
+/* Explicit-light wins over the media query above via higher specificity. */
+[data-kk-theme="light"] .kk-status--active {
+  background: #ecfdf5;
+  color: #047857;
+}
+[data-kk-theme="light"] .kk-status--closed,
+[data-kk-theme="light"] .kk-status--determined,
+[data-kk-theme="light"] .kk-status--finalized,
+[data-kk-theme="light"] .kk-status--inactive {
+  background: #f4f4f5;
+  color: #52525b;
+}
+[data-kk-theme="light"] .kk-status--disputed,
+[data-kk-theme="light"] .kk-status--amended {
+  background: #fef3c7;
+  color: #92400e;
+}
+[data-kk-theme="light"] .kk-status--initialized {
+  background: #eff6ff;
+  color: #1e40af;
+}
+[data-kk-theme="light"] .kk-price--flash-up {
+  background-color: rgba(16, 185, 129, 0.35);
+}
+[data-kk-theme="light"] .kk-price--flash-down {
+  background-color: rgba(244, 63, 94, 0.35);
+}
+[data-kk-theme="light"] .kk-skeleton {
+  background: linear-gradient(90deg, #f4f4f5 0%, #e4e4e7 50%, #f4f4f5 100%);
+  background-size: 200% 100%;
 }
 
 /* ---------- Card chip ---------- *
@@ -734,7 +795,7 @@ button.kk-book__row:focus-visible {
 }
 
 @media (prefers-color-scheme: dark) {
-  :where(:not([data-kk-theme="light"])) .kk-card__chip {
+  .kk-card__chip {
     background: color-mix(in oklab, var(--kk-text) 12%, transparent);
   }
 }
@@ -821,7 +882,7 @@ button.kk-book__row:focus-visible {
 }
 
 @media (prefers-color-scheme: dark) {
-  :where(:not([data-kk-theme="light"])) .kk-status-badge--paused {
+  .kk-status-badge--paused {
     color: #fbbf24;
     background: rgba(251, 191, 36, 0.15);
   }

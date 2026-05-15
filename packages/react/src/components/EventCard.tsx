@@ -78,16 +78,20 @@ export function EventCard({
           <p className="kk-card__subtitle">{event.subtitle}</p>
         ) : null}
       </div>
-      <div className="kk-card__footer">
-        <span className={`kk-status kk-status--${event.status}`}>
-          {event.status}
-        </span>
-        {event.closeTime ? (
-          <span className="kk-card__chip">
-            closes {formatCloseTime(event.closeTime)}
-          </span>
-        ) : null}
-      </div>
+      {(event.status && event.status !== "unknown") || event.closeTime ? (
+        <div className="kk-card__footer">
+          {event.status && event.status !== "unknown" ? (
+            <span className={`kk-status kk-status--${event.status}`}>
+              {event.status}
+            </span>
+          ) : null}
+          {event.closeTime ? (
+            <span className="kk-card__chip">
+              closes {formatCloseTime(event.closeTime)}
+            </span>
+          ) : null}
+        </div>
+      ) : null}
     </>
   );
 
