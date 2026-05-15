@@ -28,6 +28,16 @@ export type {
 export { useTrades } from "./hooks/useTrades";
 export type { UseTradesOptions, UseTradesResult } from "./hooks/useTrades";
 
+export { useExchangeStatus } from "./hooks/useExchangeStatus";
+export type {
+  ExchangeStatus,
+  UseExchangeStatusOptions,
+  UseExchangeStatusResult,
+} from "./hooks/useExchangeStatus";
+
+export { useEvent } from "./hooks/useEvent";
+export type { UseEventOptions, UseEventResult } from "./hooks/useEvent";
+
 export { usePolledResource } from "./hooks/usePolledResource";
 export type {
   PolledResource,
@@ -38,11 +48,13 @@ export {
   normalizeMarket,
   normalizeOrderbook,
   normalizeCandlesticks,
+  normalizeEvent,
   normalizeTrades,
 } from "./normalize";
 
 export type {
   Candlestick,
+  KalshiEvent,
   Market,
   MarketStatus,
   OrderbookData,
@@ -64,5 +76,17 @@ export type {
 
 export { TradeFeed } from "./components/TradeFeed";
 export type { TradeFeedProps } from "./components/TradeFeed";
+
+export { ExchangeStatusBadge } from "./components/ExchangeStatusBadge";
+export type { ExchangeStatusBadgeProps } from "./components/ExchangeStatusBadge";
+
+export { EventCard } from "./components/EventCard";
+export type { EventCardProps } from "./components/EventCard";
+
+export { EventMarketList } from "./components/EventMarketList";
+export type { EventMarketListProps } from "./components/EventMarketList";
+
+export { MarketSparkline } from "./components/MarketSparkline";
+export type { MarketSparklineProps } from "./components/MarketSparkline";
 
 export const VERSION = "0.0.1";

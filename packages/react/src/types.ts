@@ -68,6 +68,22 @@ export interface Candlestick {
   volume: number;
 }
 
+export interface KalshiEvent {
+  eventTicker: string;
+  title: string;
+  subtitle?: string;
+  category?: string;
+  seriesTicker?: string;
+  mutuallyExclusive: boolean;
+  /**
+   * Derived: when markets are nested, the first active market's status wins,
+   * else the first market's status. Without markets, falls back to "unknown".
+   */
+  status: string;
+  /** ISO timestamp. Derived from the nested markets if absent on the event. */
+  closeTime: string;
+}
+
 export interface Trade {
   id: string;
   ticker: string;

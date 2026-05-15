@@ -745,6 +745,179 @@ button.kk-book__row:focus-visible {
   margin: var(--kk-space-1) 0;
 }
 
+/* ---------- Card eyebrow ---------- *
+ * Small category label that sits above the title on `EventCard`. Reuses the
+ * muted text token so it sits visually behind the title without competing.
+ */
+
+.kk-card__eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--kk-text-muted);
+}
+
+/* ---------- Exchange status badge ---------- *
+ * Small inline pill. Sized to sit comfortably in a header next to other text.
+ * The dot pulses only when trading is active — paused/closed stay still so
+ * the animation reads as "live data is flowing".
+ */
+
+.kk-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--kk-font);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px 3px 6px;
+  border-radius: 999px;
+  letter-spacing: 0.01em;
+  background: color-mix(in oklab, var(--kk-text) 6%, transparent);
+  color: var(--kk-text-muted);
+  line-height: 1.2;
+}
+
+.kk-status-badge__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.kk-status-badge--active {
+  color: var(--kk-yes);
+  background: var(--kk-yes-bg);
+}
+
+.kk-status-badge--active .kk-status-badge__dot {
+  background: var(--kk-yes);
+  animation: kk-status-pulse 1.6s ease-in-out infinite;
+}
+
+.kk-status-badge--paused {
+  color: #92400e;
+  background: #fef3c7;
+}
+.kk-status-badge--paused .kk-status-badge__dot {
+  background: #d97706;
+}
+
+.kk-status-badge--closed {
+  color: var(--kk-no);
+  background: var(--kk-no-bg);
+}
+
+.kk-status-badge--loading {
+  color: var(--kk-text-muted);
+}
+
+[data-kk-theme="dark"] .kk-status-badge--paused,
+.kk[data-kk-theme="dark"] .kk-status-badge--paused {
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.15);
+}
+
+@media (prefers-color-scheme: dark) {
+  :where(:not([data-kk-theme="light"])) .kk-status-badge--paused {
+    color: #fbbf24;
+    background: rgba(251, 191, 36, 0.15);
+  }
+}
+
+@keyframes kk-status-pulse {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 currentColor;
+  }
+  50% {
+    opacity: 0.6;
+    box-shadow: 0 0 0 3px color-mix(in oklab, currentColor 0%, transparent);
+  }
+}
+
+/* ---------- Event market list ---------- *
+ * Stacked rows with a horizontal probability bar. Label sits over the bar
+ * so the visual reads as "this option fills X% of the row".
+ */
+
+.kk-event-list {
+  background: var(--kk-bg);
+  border: 1px solid var(--kk-border);
+  border-radius: var(--kk-radius);
+  box-shadow: var(--kk-shadow);
+  padding: var(--kk-space-2);
+  font-family: var(--kk-font);
+  color: var(--kk-text);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.kk-event-list__row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--kk-space-2);
+  padding: 8px 10px;
+  border-radius: var(--kk-radius-sm);
+  font-size: 13px;
+  overflow: hidden;
+  transition: background-color var(--kk-duration-fast) ease;
+}
+
+.kk-event-list__row:hover {
+  background: color-mix(in oklab, var(--kk-text) 4%, transparent);
+}
+
+.kk-event-list__bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  background: var(--kk-yes-bg);
+  pointer-events: none;
+  transition: width 350ms var(--kk-ease);
+  border-radius: var(--kk-radius-sm);
+}
+
+.kk-event-list__label {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  min-width: 0;
+  color: var(--kk-text);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.kk-event-list__price {
+  position: relative;
+  z-index: 1;
+  font-weight: 600;
+  color: var(--kk-yes);
+  font-feature-settings: "tnum" 1;
+  flex-shrink: 0;
+  min-width: 40px;
+  text-align: right;
+}
+
+/* ---------- Sparkline ---------- *
+ * SVG-only; root just controls alignment when embedded inline with text.
+ */
+
+.kk-sparkline {
+  display: inline-block;
+  vertical-align: middle;
+  overflow: visible;
+}
+
 /* ---------- Reduced motion ---------- *
  * Honor `prefers-reduced-motion` for the kit's shimmer, flash, and hover
  * transitions. Skeleton stays visible; just stops animating.
@@ -754,12 +927,17 @@ button.kk-book__row:focus-visible {
   .kk-skeleton {
     animation: none;
   }
+  .kk-status-badge--active .kk-status-badge__dot {
+    animation: none;
+  }
   .kk-book__row-bar,
   .kk-price,
   button.kk-card,
   .kk-card--interactive,
   button.kk-book__row,
-  button.kk-feed__row {
+  button.kk-feed__row,
+  .kk-event-list__row,
+  .kk-event-list__bar {
     transition: none !important;
   }
 }

@@ -10,6 +10,7 @@
 
 import type {
   Candlestick,
+  KalshiEvent,
   Market,
   OrderbookData,
   OrderbookLevel,
@@ -170,6 +171,43 @@ export function normalizeCandlesticks(
   // Ensure strictly ascending time for lightweight-charts.
   out.sort((a, b) => a.time - b.time);
   return out;
+}
+
+/**
+ * The `/events/{ticker}` endpoint returns the event object without a status
+ * or close_time — those live on each child market. When nested markets are
+ * available we derive both from the first market (all markets in an event
+ * share the same close_time). When markets aren't fetched, the caller gets
+ * empty defaults and can fill from elsewhere.
+ */
+export function normalizeEvent(
+  raw: Record<string, unknown>,
+  nestedMarkets?: ReadonlyArray<Record<string, unknown>>,
+): KalshiEvent {
+  const firstMarket = nestedMarkets?.[0];
+  // Prefer an explicit market-level status; "active" wins if any market is open.
+  let derivedStatus = "";
+  if (nestedMarkets && nestedMarkets.length > 0) {
+    derivedStatus =
+      nestedMarkets.find((m) => m.status === "active")?.status as
+        | string
+        | undefined ??
+        (firstMarket?.status as string | undefined) ??
+        "";
+  }
+
+  return {
+    eventTicker: String(raw.event_ticker ?? ""),
+    title: String(raw.title ?? ""),
+    subtitle: (raw.sub_title as string | undefined) || undefined,
+    category: (raw.category as string | undefined) || undefined,
+    seriesTicker: (raw.series_ticker as string | undefined) || undefined,
+    mutuallyExclusive: Boolean(raw.mutually_exclusive),
+    status: derivedStatus || String(raw.status ?? "unknown"),
+    closeTime: String(
+      raw.close_time ?? firstMarket?.close_time ?? "",
+    ),
+  };
 }
 
 export function normalizeTrades(raw: unknown): Trade[] {
