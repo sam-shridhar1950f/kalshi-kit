@@ -101,9 +101,6 @@ export function MarketCard({
     <>
       <div className="kk-card__header">
         <h3 className="kk-card__title">{market.title}</h3>
-        {market.subtitle ? (
-          <p className="kk-card__subtitle">{market.subtitle}</p>
-        ) : null}
       </div>
       <div className="kk-prices">
         <div className={yesClass}>

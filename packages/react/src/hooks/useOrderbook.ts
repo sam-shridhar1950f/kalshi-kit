@@ -45,8 +45,10 @@ export function useOrderbook(
 
     async function tick() {
       try {
+        // Server caps `depth` at 100; clamp to avoid wasted bytes.
+        const serverDepth = Math.min(Math.max(depth, 1), 100);
         const response = await client.fetch<Record<string, unknown>>(
-          `/markets/${encodeURIComponent(ticker)}/orderbook`,
+          `/markets/${encodeURIComponent(ticker)}/orderbook?depth=${serverDepth}`,
         );
         if (cancelled) return;
         setOrderbook(normalizeOrderbook(response, depth));

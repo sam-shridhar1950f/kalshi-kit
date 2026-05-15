@@ -1,24 +1,22 @@
 /**
- * Kalshi exposes a few overlapping status values across endpoints
- * (e.g. `active`, `open`, `settled`, `finalized`). This type lists the
- * common ones for autocomplete but accepts any string so unknown values
- * don't break the UI.
+ * Kalshi v2 market lifecycle values. The string-fallback keeps unknown values
+ * from breaking the UI in case the upstream contract evolves.
  */
 export type MarketStatus =
-  | "unopened"
-  | "open"
+  | "initialized"
+  | "inactive"
   | "active"
   | "closed"
-  | "settled"
-  | "finalized"
   | "determined"
+  | "disputed"
+  | "amended"
+  | "finalized"
   | (string & {});
 
 export interface Market {
   ticker: string;
   event_ticker: string;
   title: string;
-  subtitle?: string;
   yes_sub_title?: string;
   no_sub_title?: string;
   status: MarketStatus;
@@ -38,13 +36,11 @@ export interface Market {
   /** Normalized to whole contracts. */
   volume: number;
   volume_24h: number;
-  liquidity: number;
   open_interest: number;
   close_time: string;
   expiration_time: string;
   result?: string;
   can_close_early: boolean;
-  category?: string;
 }
 
 export interface OrderbookLevel {
@@ -77,6 +73,7 @@ export interface Trade {
   ticker: string;
   /** ISO timestamp. */
   createdAt: string;
+  /** Number of contracts traded. Fractional markets may report sub-contract values. */
   count: number;
   /** Cents, 0–100. */
   yesPrice: number;

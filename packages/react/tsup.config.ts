@@ -8,6 +8,13 @@ import {
 
 const USE_CLIENT = '"use client";\n';
 
+/**
+ * tsup's idiomatic `banner: { js: '"use client";' }` is silently dropped by
+ * esbuild — it warns "Module level directives cause errors when bundled" and
+ * strips the directive from the output. Until esbuild (or tsup) lands a real
+ * fix we re-prepend the directive in `onSuccess`; the rewritten file still
+ * has the correct source map because we only add a new first line.
+ */
 function prependUseClient(file: string) {
   if (!existsSync(file)) return;
   const content = readFileSync(file, "utf-8");

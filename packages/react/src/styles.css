@@ -152,22 +152,23 @@ button.kk-card:focus-visible,
   letter-spacing: 0.01em;
 }
 
-.kk-status--open,
 .kk-status--active {
   background: #ecfdf5;
   color: #047857;
 }
-.kk-status--closed {
-  background: #fef3c7;
-  color: #92400e;
-}
-.kk-status--settled,
+.kk-status--closed,
+.kk-status--determined,
 .kk-status--finalized,
-.kk-status--determined {
+.kk-status--inactive {
   background: #f4f4f5;
   color: #52525b;
 }
-.kk-status--unopened {
+.kk-status--disputed,
+.kk-status--amended {
+  background: #fef3c7;
+  color: #92400e;
+}
+.kk-status--initialized {
   background: #eff6ff;
   color: #1e40af;
 }
@@ -541,22 +542,23 @@ button.kk-card:focus-visible,
     --kk-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.5);
   }
 
-  .kk-status--open,
   .kk-status--active {
     background: rgba(74, 222, 128, 0.15);
     color: #4ade80;
   }
-  .kk-status--closed {
-    background: rgba(251, 191, 36, 0.15);
-    color: #fbbf24;
-  }
-  .kk-status--settled,
+  .kk-status--closed,
+  .kk-status--determined,
   .kk-status--finalized,
-  .kk-status--determined {
+  .kk-status--inactive {
     background: rgba(161, 161, 170, 0.15);
     color: #a1a1aa;
   }
-  .kk-status--unopened {
+  .kk-status--disputed,
+  .kk-status--amended {
+    background: rgba(251, 191, 36, 0.15);
+    color: #fbbf24;
+  }
+  .kk-status--initialized {
     background: rgba(96, 165, 250, 0.15);
     color: #60a5fa;
   }

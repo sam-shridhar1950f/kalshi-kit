@@ -88,9 +88,13 @@ export function createKalshiRouteHandler(
 
   return async function handler(
     req: Request,
-    ctx: { params: Promise<{ path?: string[] }> },
+    ctx: {
+      // Next 15 makes `params` a Promise; Next 13/14 pass the plain object.
+      // `Promise.resolve` collapses both cases without breaking either.
+      params: Promise<{ path?: string[] }> | { path?: string[] };
+    },
   ): Promise<Response> {
-    const { path = [] } = await ctx.params;
+    const { path = [] } = await Promise.resolve(ctx.params);
     const url = new URL(req.url);
     const target = `${upstream}/${path.join("/")}${url.search}`;
 

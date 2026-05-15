@@ -3,8 +3,9 @@
  * string fixed-point fields (yes_bid_dollars: "0.66", volume_fp: "1233254.43").
  * As of May 2026 most market endpoints return only the new shape.
  *
- * The components in this package work in cents (0–100) and whole contracts;
- * these helpers absorb the shape difference so the components stay simple.
+ * The components in this package work in cents (0–100) and contract counts
+ * (which may be fractional on sub-contract markets); these helpers absorb the
+ * shape difference so the components stay simple.
  */
 
 import type {
@@ -37,6 +38,7 @@ function pickPrice(
   if (rawDollars !== undefined && rawDollars !== null) {
     return dollarsToCents(rawDollars);
   }
+  // Legacy integer-cents fallback — pre-_dollars responses were always integers.
   return Math.round(num(rawCents));
 }
 
@@ -52,7 +54,6 @@ export function normalizeMarket(raw: Record<string, unknown>): Market {
     ticker: String(raw.ticker ?? ""),
     event_ticker: String(raw.event_ticker ?? ""),
     title: String(raw.title ?? ""),
-    subtitle: raw.subtitle as string | undefined,
     yes_sub_title: raw.yes_sub_title as string | undefined,
     no_sub_title: raw.no_sub_title as string | undefined,
     status: String(raw.status ?? "unknown"),
@@ -72,13 +73,11 @@ export function normalizeMarket(raw: Record<string, unknown>): Market {
       : (raw.previous_price as number | undefined),
     volume: pickVolume(raw.volume, raw.volume_fp),
     volume_24h: pickVolume(raw.volume_24h, raw.volume_24h_fp),
-    liquidity: pickVolume(raw.liquidity, raw.liquidity_fp),
     open_interest: pickVolume(raw.open_interest, raw.open_interest_fp),
     close_time: String(raw.close_time ?? ""),
     expiration_time: String(raw.expiration_time ?? ""),
     result: (raw.result as string) || undefined,
     can_close_early: Boolean(raw.can_close_early),
-    category: raw.category as string | undefined,
   };
 }
 
@@ -186,7 +185,7 @@ export function normalizeTrades(raw: unknown): Trade[] {
       id: String(entry.trade_id ?? ""),
       ticker: String(entry.ticker ?? ""),
       createdAt: String(entry.created_time ?? ""),
-      count: Math.round(num(entry.count_fp ?? entry.count)),
+      count: num(entry.count_fp ?? entry.count),
       yesPrice: dollarsToCents(entry.yes_price_dollars ?? entry.yes_price),
       noPrice: dollarsToCents(entry.no_price_dollars ?? entry.no_price),
       takerSide: entry.taker_outcome_side === "no" ? "no" : "yes",
