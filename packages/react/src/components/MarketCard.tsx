@@ -138,14 +138,14 @@ export function MarketCard({
       </div>
       {!hideFooter ? (
         <div className="kk-card__footer">
-          <span className="kk-card__stat">
+          <span className="kk-card__chip">
             {formatVolume(market.volume)} vol
           </span>
           <span className={`kk-status kk-status--${market.status}`}>
             {market.status}
           </span>
           {market.close_time ? (
-            <span className="kk-card__stat">
+            <span className="kk-card__chip">
               closes {formatCloseTime(market.close_time)}
             </span>
           ) : null}

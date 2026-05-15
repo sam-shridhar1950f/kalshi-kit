@@ -74,13 +74,26 @@ export function TradeFeed({
   const rootClass = ["kk", "kk-feed", className].filter(Boolean).join(" ");
 
   if (isLoading && trades.length === 0) {
+    // Render the full heading scaffold (title + column labels) and shimmer
+    // rows below at the same row height as real trades. Prevents layout
+    // jump on data arrival.
     return (
       <div className={rootClass} aria-busy="true">
         <div className="kk-feed__heading">
           <span className="kk-feed__title">{heading}</span>
+          <span className="kk-feed__heading-cols">
+            <span>Side</span>
+            <span>Price</span>
+            <span>Size</span>
+            <span>Time</span>
+          </span>
         </div>
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="kk-skeleton kk-skeleton--row" />
+          <div
+            key={i}
+            className="kk-skeleton kk-skeleton--feed-row"
+            aria-hidden
+          />
         ))}
       </div>
     );
@@ -106,7 +119,7 @@ export function TradeFeed({
         </span>
       </div>
       {trades.length === 0 ? (
-        <div className="kk-feed__empty">no trades yet</div>
+        <div className="kk-feed__empty">Waiting for first trade</div>
       ) : (
         <ol className="kk-feed__list">
           {trades.map((t) => {

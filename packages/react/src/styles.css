@@ -23,10 +23,10 @@
   --kk-text-muted: #71717a;
   --kk-border: #e4e4e7;
   --kk-border-hover: #d4d4d8;
-  --kk-yes: #16a34a;
-  --kk-yes-bg: #f0fdf4;
-  --kk-no: #dc2626;
-  --kk-no-bg: #fef2f2;
+  --kk-yes: #10b981;
+  --kk-yes-bg: #ecfdf5;
+  --kk-no: #f43f5e;
+  --kk-no-bg: #fff1f2;
   --kk-focus: #2563eb;
 
   /* Shape & elevation */
@@ -72,10 +72,10 @@
   --kk-text-muted: #a1a1aa;
   --kk-border: #27272a;
   --kk-border-hover: #3f3f46;
-  --kk-yes: #4ade80;
-  --kk-yes-bg: rgba(74, 222, 128, 0.1);
-  --kk-no: #f87171;
-  --kk-no-bg: rgba(248, 113, 113, 0.1);
+  --kk-yes: #34d399;
+  --kk-yes-bg: rgba(52, 211, 153, 0.12);
+  --kk-no: #fb7185;
+  --kk-no-bg: rgba(251, 113, 133, 0.12);
   --kk-focus: #60a5fa;
   --kk-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   --kk-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.5);
@@ -89,10 +89,10 @@
     --kk-text-muted: #a1a1aa;
     --kk-border: #27272a;
     --kk-border-hover: #3f3f46;
-    --kk-yes: #4ade80;
-    --kk-yes-bg: rgba(74, 222, 128, 0.1);
-    --kk-no: #f87171;
-    --kk-no-bg: rgba(248, 113, 113, 0.1);
+    --kk-yes: #34d399;
+    --kk-yes-bg: rgba(52, 211, 153, 0.12);
+    --kk-no: #fb7185;
+    --kk-no-bg: rgba(251, 113, 133, 0.12);
     --kk-focus: #60a5fa;
     --kk-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
     --kk-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.5);
@@ -136,14 +136,14 @@ button.kk-card:hover,
 
 button.kk-card:focus-visible,
 .kk-card--interactive:focus-visible {
-  outline: 2px solid var(--kk-yes);
+  outline: 2px solid var(--kk-focus);
   outline-offset: 2px;
 }
 
 .kk-card__header {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--kk-space-1);
 }
 
 .kk-card__title {
@@ -189,11 +189,11 @@ button.kk-card:focus-visible,
 }
 
 .kk-price--flash-up {
-  background-color: rgba(34, 197, 94, 0.35);
+  background-color: rgba(16, 185, 129, 0.35);
 }
 
 .kk-price--flash-down {
-  background-color: rgba(239, 68, 68, 0.35);
+  background-color: rgba(244, 63, 94, 0.35);
 }
 
 .kk-price__label {
@@ -236,6 +236,8 @@ button.kk-card:focus-visible,
   background: #ecfdf5;
   color: #047857;
 }
+/* Note: light-mode active retains emerald-50 bg (#ecfdf5) and emerald-700 fg
+ * (#047857) which already match the new --kk-yes palette. No retone needed. */
 .kk-status--closed,
 .kk-status--determined,
 .kk-status--finalized,
@@ -326,7 +328,7 @@ button.kk-card:focus-visible,
 
 .kk-feed__heading-cols {
   display: grid;
-  grid-template-columns: 40px 56px 56px 44px;
+  grid-template-columns: 40px 1fr 56px 44px;
   gap: var(--kk-space-2);
   text-align: right;
   font-size: 10px;
@@ -355,13 +357,29 @@ button.kk-card:focus-visible,
 }
 
 button.kk-feed__row {
-  background: transparent;
-  border: 0;
-  font: inherit;
-  color: inherit;
+  all: unset;
+  /* Re-declare the grid layout `all: unset` blew away. Must mirror
+   * `.kk-feed__row` exactly so the row cells line up under the heading. */
+  display: grid;
+  grid-template-columns: 40px 1fr 56px 44px;
+  align-items: center;
+  gap: var(--kk-space-2);
+  padding: var(--kk-space-1) var(--kk-space-1);
+  font-size: 13px;
+  font-feature-settings: "tnum" 1;
   cursor: pointer;
-  text-align: left;
   width: 100%;
+  box-sizing: border-box;
+  transition: background-color var(--kk-duration-fast) ease;
+}
+
+button.kk-feed__row:hover {
+  background: color-mix(in oklab, var(--kk-text) 5%, transparent);
+}
+
+button.kk-feed__row:focus-visible {
+  outline: 2px solid var(--kk-focus);
+  outline-offset: -2px;
 }
 
 .kk-feed__side {
@@ -407,7 +425,7 @@ button.kk-feed__row {
 }
 
 .kk-feed__empty {
-  padding: var(--kk-space-3) var(--kk-space-1);
+  padding: var(--kk-space-6) var(--kk-space-3);
   font-size: 12px;
   color: var(--kk-text-muted);
   text-align: center;
@@ -529,13 +547,31 @@ button.kk-feed__row {
 }
 
 button.kk-book__row {
-  background: transparent;
-  border: 0;
-  font: inherit;
-  color: inherit;
+  all: unset;
+  /* Re-declare the flex layout `all: unset` blew away. Must mirror
+   * `.kk-book__row` so the bar/price/size children render correctly. */
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--kk-space-2);
+  padding: var(--kk-space-1) 6px;
+  font-size: 13px;
+  font-feature-settings: "tnum" 1;
+  border-radius: 4px;
+  overflow: hidden;
   cursor: pointer;
-  text-align: left;
   width: 100%;
+  box-sizing: border-box;
+  transition: background-color var(--kk-duration-fast) ease;
+}
+
+button.kk-book__row:hover {
+  background: color-mix(in oklab, var(--kk-text) 5%, transparent);
+}
+
+button.kk-book__row:focus-visible {
+  outline: 2px solid var(--kk-focus);
+  outline-offset: -2px;
 }
 
 .kk-book__row-bar {
@@ -578,9 +614,10 @@ button.kk-book__row {
 }
 
 .kk-book__empty {
-  padding: 6px;
+  padding: var(--kk-space-6) var(--kk-space-3);
   font-size: 12px;
   color: var(--kk-text-muted);
+  text-align: center;
 }
 
 .kk-book--error {
@@ -599,8 +636,8 @@ button.kk-book__row {
 
 [data-kk-theme="dark"] .kk-status--active,
 .kk[data-kk-theme="dark"] .kk-status--active {
-  background: rgba(74, 222, 128, 0.15);
-  color: #4ade80;
+  background: rgba(52, 211, 153, 0.15);
+  color: #34d399;
 }
 [data-kk-theme="dark"] .kk-status--closed,
 [data-kk-theme="dark"] .kk-status--determined,
@@ -627,11 +664,11 @@ button.kk-book__row {
 }
 [data-kk-theme="dark"] .kk-price--flash-up,
 .kk[data-kk-theme="dark"] .kk-price--flash-up {
-  background-color: rgba(74, 222, 128, 0.4);
+  background-color: rgba(52, 211, 153, 0.4);
 }
 [data-kk-theme="dark"] .kk-price--flash-down,
 .kk[data-kk-theme="dark"] .kk-price--flash-down {
-  background-color: rgba(248, 113, 113, 0.4);
+  background-color: rgba(251, 113, 133, 0.4);
 }
 [data-kk-theme="dark"] .kk-skeleton,
 .kk[data-kk-theme="dark"] .kk-skeleton {
@@ -641,8 +678,8 @@ button.kk-book__row {
 
 @media (prefers-color-scheme: dark) {
   :where(:not([data-kk-theme="light"])) .kk-status--active {
-    background: rgba(74, 222, 128, 0.15);
-    color: #4ade80;
+    background: rgba(52, 211, 153, 0.15);
+    color: #34d399;
   }
   :where(:not([data-kk-theme="light"])) .kk-status--closed,
   :where(:not([data-kk-theme="light"])) .kk-status--determined,
@@ -661,13 +698,68 @@ button.kk-book__row {
     color: #60a5fa;
   }
   :where(:not([data-kk-theme="light"])) .kk-price--flash-up {
-    background-color: rgba(74, 222, 128, 0.4);
+    background-color: rgba(52, 211, 153, 0.4);
   }
   :where(:not([data-kk-theme="light"])) .kk-price--flash-down {
-    background-color: rgba(248, 113, 113, 0.4);
+    background-color: rgba(251, 113, 133, 0.4);
   }
   :where(:not([data-kk-theme="light"])) .kk-skeleton {
     background: linear-gradient(90deg, #18181b 0%, #27272a 50%, #18181b 100%);
     background-size: 200% 100%;
+  }
+}
+
+/* ---------- Card chip ---------- *
+ * Pill-shaped stat for footer values (volume, close-time). Visually pairs
+ * with `.kk-status` so naked text doesn't sit next to a styled pill.
+ * color-mix is widely supported in evergreen browsers since 2024.
+ */
+
+.kk-card__chip {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--kk-text) 8%, transparent);
+  color: var(--kk-text-muted);
+  letter-spacing: 0.01em;
+  font-feature-settings: "tnum" 1;
+}
+
+[data-kk-theme="dark"] .kk-card__chip,
+.kk[data-kk-theme="dark"] .kk-card__chip {
+  background: color-mix(in oklab, var(--kk-text) 12%, transparent);
+}
+
+@media (prefers-color-scheme: dark) {
+  :where(:not([data-kk-theme="light"])) .kk-card__chip {
+    background: color-mix(in oklab, var(--kk-text) 12%, transparent);
+  }
+}
+
+/* Skeleton row sized to the feed row, so layout doesn't jump on load. */
+.kk-skeleton--feed-row {
+  height: 22px;
+  margin: var(--kk-space-1) 0;
+}
+
+/* ---------- Reduced motion ---------- *
+ * Honor `prefers-reduced-motion` for the kit's shimmer, flash, and hover
+ * transitions. Skeleton stays visible; just stops animating.
+ */
+
+@media (prefers-reduced-motion: reduce) {
+  .kk-skeleton {
+    animation: none;
+  }
+  .kk-book__row-bar,
+  .kk-price,
+  button.kk-card,
+  .kk-card--interactive,
+  button.kk-book__row,
+  button.kk-feed__row {
+    transition: none !important;
   }
 }

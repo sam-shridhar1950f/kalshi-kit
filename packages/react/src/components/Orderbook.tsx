@@ -56,7 +56,7 @@ function Side({ side, levels, ceiling, onLevelClick }: SideProps) {
       </header>
       <ol className="kk-book__rows">
         {levels.length === 0 ? (
-          <li className="kk-book__empty">no bids</li>
+          <li className="kk-book__empty">Waiting for first quote</li>
         ) : (
           levels.map((level, i) => {
             const barWidth = `${Math.min(
@@ -130,11 +130,37 @@ export function Orderbook({
     .join(" ");
 
   if (isLoading && !orderbook) {
+    // Render the full YES/NO heading scaffold (same as the real layout)
+    // and shimmer the rows below. Keeps row heights identical to the
+    // hydrated state so the layout doesn't jump on data arrival.
+    const skeletonSide = (side: "yes" | "no") => (
+      <div
+        key={side}
+        className={`kk-book__side kk-book__side--${side}`}
+      >
+        <header className="kk-book__heading">
+          <span className="kk-book__label">{side.toUpperCase()}</span>
+          <span className="kk-book__heading-cols">
+            <span>Price</span>
+            <span>Size</span>
+          </span>
+        </header>
+        <ol className="kk-book__rows">
+          {Array.from({ length: depth }).map((_, i) => (
+            <li
+              key={i}
+              className="kk-skeleton kk-skeleton--row"
+              aria-hidden
+            />
+          ))}
+        </ol>
+      </div>
+    );
+
     return (
       <div className={rootClass} aria-busy="true">
-        {Array.from({ length: depth * 2 }).map((_, i) => (
-          <div key={i} className="kk-skeleton kk-skeleton--row" />
-        ))}
+        {skeletonSide("yes")}
+        {skeletonSide("no")}
       </div>
     );
   }
