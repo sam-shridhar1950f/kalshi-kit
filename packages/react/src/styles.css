@@ -1117,7 +1117,197 @@ button.kk-book__row:focus-visible {
   .kk-event-list__row,
   .kk-event-list__bar,
   .kk-dial__arc,
-  .kk-range-pill {
+  .kk-range-pill,
+  .kk-trade-btn,
+  .kk-watch-btn,
+  .kk-share__btn {
     transition: none !important;
   }
+}
+
+/* ---------- Wave B: TradeButton / WatchlistButton / ShareCard ---------- */
+
+.kk-trade-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: var(--kk-font);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  padding: 8px 14px;
+  border-radius: var(--kk-radius-sm);
+  border: 1px solid transparent;
+  text-decoration: none;
+  cursor: pointer;
+  line-height: 1.2;
+  box-sizing: border-box;
+  transition:
+    background-color var(--kk-duration-fast) ease,
+    border-color var(--kk-duration-fast) ease,
+    color var(--kk-duration-fast) ease,
+    transform var(--kk-duration-fast) ease,
+    box-shadow var(--kk-duration-fast) ease;
+}
+
+.kk-trade-btn--solid.kk-trade-btn--yes {
+  background: var(--kk-yes);
+  color: #ffffff;
+  border-color: var(--kk-yes);
+}
+
+.kk-trade-btn--solid.kk-trade-btn--no {
+  background: var(--kk-no);
+  color: #ffffff;
+  border-color: var(--kk-no);
+}
+
+.kk-trade-btn--solid:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--kk-shadow-hover);
+  filter: brightness(1.05);
+}
+
+.kk-trade-btn--ghost {
+  background: transparent;
+}
+
+.kk-trade-btn--ghost.kk-trade-btn--yes {
+  color: var(--kk-yes);
+  border-color: var(--kk-yes);
+}
+
+.kk-trade-btn--ghost.kk-trade-btn--no {
+  color: var(--kk-no);
+  border-color: var(--kk-no);
+}
+
+.kk-trade-btn--ghost.kk-trade-btn--yes:hover {
+  background: var(--kk-yes-bg);
+}
+
+.kk-trade-btn--ghost.kk-trade-btn--no:hover {
+  background: var(--kk-no-bg);
+}
+
+.kk-trade-btn:focus-visible {
+  outline: 2px solid var(--kk-focus);
+  outline-offset: 2px;
+}
+
+.kk-trade-btn__arrow {
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.kk-watch-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  padding: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  color: var(--kk-text-muted);
+  font: inherit;
+  transition:
+    color var(--kk-duration-fast) ease,
+    background-color var(--kk-duration-fast) ease,
+    transform var(--kk-duration-fast) ease;
+}
+
+.kk-watch-btn:hover {
+  color: var(--kk-focus);
+  background: color-mix(in oklab, var(--kk-focus) 10%, transparent);
+}
+
+.kk-watch-btn:focus-visible {
+  outline: 2px solid var(--kk-focus);
+  outline-offset: 2px;
+}
+
+.kk-watch-btn--active {
+  color: var(--kk-focus);
+}
+
+.kk-watch-btn--active:hover {
+  transform: scale(1.05);
+}
+
+.kk-share {
+  display: flex;
+  align-items: center;
+  gap: var(--kk-space-3);
+  background: var(--kk-bg);
+  border: 1px solid var(--kk-border);
+  border-radius: var(--kk-radius);
+  box-shadow: var(--kk-shadow);
+  padding: var(--kk-space-2) var(--kk-space-3);
+  font-family: var(--kk-font);
+  color: var(--kk-text);
+  font-size: 12px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.kk-share__url {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--kk-text-muted);
+  font-feature-settings: "tnum" 1;
+}
+
+.kk-share__actions {
+  display: inline-flex;
+  gap: var(--kk-space-2);
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.kk-share__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: var(--kk-radius-sm);
+  border: 1px solid var(--kk-border);
+  background: transparent;
+  color: var(--kk-text);
+  cursor: pointer;
+  line-height: 1.2;
+  transition:
+    background-color var(--kk-duration-fast) ease,
+    border-color var(--kk-duration-fast) ease,
+    color var(--kk-duration-fast) ease;
+}
+
+.kk-share__btn:hover {
+  border-color: var(--kk-border-hover);
+  background: color-mix(in oklab, var(--kk-text) 5%, transparent);
+}
+
+.kk-share__btn:focus-visible {
+  outline: 2px solid var(--kk-focus);
+  outline-offset: 2px;
+}
+
+.kk-share__btn--primary {
+  background: var(--kk-focus);
+  border-color: var(--kk-focus);
+  color: #ffffff;
+}
+
+.kk-share__btn--primary:hover {
+  background: var(--kk-focus);
+  border-color: var(--kk-focus);
+  filter: brightness(1.08);
+  color: #ffffff;
 }

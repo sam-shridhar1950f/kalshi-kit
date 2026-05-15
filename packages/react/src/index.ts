@@ -104,4 +104,16 @@ export type {
   TimeRangeSelectorProps,
 } from "./components/TimeRangeSelector";
 
+export { TradeButton } from "./components/TradeButton";
+export type { TradeButtonProps } from "./components/TradeButton";
+
+export { WatchlistButton } from "./components/WatchlistButton";
+export type { WatchlistButtonProps } from "./components/WatchlistButton";
+
+export { useWatchlist } from "./hooks/useWatchlist";
+export type { UseWatchlistResult } from "./hooks/useWatchlist";
+
+export { ShareCard } from "./components/ShareCard";
+export type { ShareCardProps } from "./components/ShareCard";
+
 export const VERSION = "0.0.1";
