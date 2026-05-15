@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useKalshi } from "../provider";
+import { normalizeMarket } from "../normalize";
 import type { Market } from "../types";
 
 export interface UseMarketOptions {
@@ -16,7 +17,7 @@ export interface UseMarketResult {
 }
 
 interface MarketResponse {
-  market: Market;
+  market: Record<string, unknown>;
 }
 
 export function useMarket(
@@ -44,7 +45,7 @@ export function useMarket(
           `/markets/${encodeURIComponent(ticker)}`,
         );
         if (cancelled) return;
-        setMarket(response.market);
+        setMarket(normalizeMarket(response.market));
         setError(null);
       } catch (e) {
         if (cancelled) return;

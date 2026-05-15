@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useKalshi } from "../provider";
-import type { OrderbookData, OrderbookLevel } from "../types";
+import { normalizeOrderbook } from "../normalize";
+import type { OrderbookData } from "../types";
 
 export interface UseOrderbookOptions {
   /** How often to refetch, in milliseconds. Default 1500. */
@@ -15,24 +16,6 @@ export interface UseOrderbookResult {
   orderbook: OrderbookData | null;
   isLoading: boolean;
   error: Error | null;
-}
-
-interface OrderbookResponse {
-  orderbook: {
-    yes: number[][] | null;
-    no: number[][] | null;
-  };
-}
-
-function toLevels(
-  rows: number[][] | null | undefined,
-  depth: number,
-): OrderbookLevel[] {
-  if (!rows) return [];
-  return rows.slice(0, depth).map((row) => ({
-    price: row?.[0] ?? 0,
-    size: row?.[1] ?? 0,
-  }));
 }
 
 export function useOrderbook(
@@ -56,14 +39,11 @@ export function useOrderbook(
 
     async function tick() {
       try {
-        const response = await client.fetch<OrderbookResponse>(
+        const response = await client.fetch<Record<string, unknown>>(
           `/markets/${encodeURIComponent(ticker)}/orderbook`,
         );
         if (cancelled) return;
-        setOrderbook({
-          yes: toLevels(response.orderbook.yes, depth),
-          no: toLevels(response.orderbook.no, depth),
-        });
+        setOrderbook(normalizeOrderbook(response, depth));
         setError(null);
       } catch (e) {
         if (cancelled) return;
