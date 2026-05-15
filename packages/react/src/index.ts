@@ -2,8 +2,12 @@ export { createClient, KalshiApiError } from "./client";
 export { formatCents } from "./format";
 export type { KalshiClient, KalshiClientConfig } from "./client";
 
-export { KalshiProvider, useKalshi } from "./provider";
-export type { KalshiProviderProps } from "./provider";
+export { KalshiProvider, useKalshi, useKalshiTheme } from "./provider";
+export type {
+  KalshiProviderProps,
+  KalshiTheme,
+  ResolvedKalshiTheme,
+} from "./provider";
 
 export { useMarket } from "./hooks/useMarket";
 export type { UseMarketOptions, UseMarketResult } from "./hooks/useMarket";
@@ -30,6 +34,13 @@ export type {
   UsePolledResourceOptions,
 } from "./hooks/usePolledResource";
 
+export {
+  normalizeMarket,
+  normalizeOrderbook,
+  normalizeCandlesticks,
+  normalizeTrades,
+} from "./normalize";
+
 export type {
   Candlestick,
   Market,
@@ -46,7 +57,10 @@ export { Orderbook } from "./components/Orderbook";
 export type { OrderbookProps } from "./components/Orderbook";
 
 export { CandlestickChart } from "./components/CandlestickChart";
-export type { CandlestickChartProps } from "./components/CandlestickChart";
+export type {
+  CandlestickChartHandle,
+  CandlestickChartProps,
+} from "./components/CandlestickChart";
 
 export { TradeFeed } from "./components/TradeFeed";
 export type { TradeFeedProps } from "./components/TradeFeed";

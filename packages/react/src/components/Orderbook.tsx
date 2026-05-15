@@ -1,16 +1,34 @@
 import { useOrderbook } from "../hooks/useOrderbook";
 import { formatCents } from "../format";
-import type { OrderbookLevel } from "../types";
+import type { OrderbookData, OrderbookLevel } from "../types";
 
 export interface OrderbookProps {
-  ticker: string;
+  /**
+   * Market ticker. Required unless `data` is supplied. When `data` is
+   * supplied the component skips fetching entirely and renders from `data`.
+   */
+  ticker?: string;
   className?: string;
-  /** Polling interval in ms. Default 1500. */
+  /**
+   * Polling interval in ms. Default 1500.
+   * Ignored when `data` is supplied.
+   */
   pollIntervalMs?: number;
   /** Number of price levels per side. Default 6. */
   depth?: number;
   /** Layout. "stacked" puts YES above NO; "split" places them side-by-side. Default "stacked". */
   layout?: "stacked" | "split";
+  /**
+   * Pre-fetched orderbook. When supplied, the component renders from this
+   * value and does not call `useOrderbook()`.
+   */
+  data?: OrderbookData;
+  /**
+   * Called when a row is clicked. Wires the row as a `<button>` instead of
+   * a `<li>` when supplied. Styling of the button rows is kept neutral here;
+   * Sprint 3 polishes the interaction visuals.
+   */
+  onLevelClick?: (level: OrderbookLevel, side: "yes" | "no") => void;
 }
 
 function maxSize(levels: OrderbookLevel[]): number {
@@ -23,9 +41,10 @@ interface SideProps {
   side: "yes" | "no";
   levels: OrderbookLevel[];
   ceiling: number;
+  onLevelClick?: (level: OrderbookLevel, side: "yes" | "no") => void;
 }
 
-function Side({ side, levels, ceiling }: SideProps) {
+function Side({ side, levels, ceiling, onLevelClick }: SideProps) {
   return (
     <div className={`kk-book__side kk-book__side--${side}`}>
       <header className="kk-book__heading">
@@ -39,24 +58,49 @@ function Side({ side, levels, ceiling }: SideProps) {
         {levels.length === 0 ? (
           <li className="kk-book__empty">no bids</li>
         ) : (
-          levels.map((level, i) => (
-            <li
-              key={`${side}-${i}-${level.price}`}
-              className={`kk-book__row kk-book__row--${side}`}
-            >
-              <span
-                className="kk-book__row-bar"
-                style={{
-                  width: `${Math.min(100, (level.size / Math.max(1, ceiling)) * 100)}%`,
-                }}
-                aria-hidden
-              />
-              <span className="kk-book__row-price">{formatCents(level.price)}</span>
-              <span className="kk-book__row-size">
-                {level.size.toLocaleString()}
-              </span>
-            </li>
-          ))
+          levels.map((level, i) => {
+            const barWidth = `${Math.min(
+              100,
+              (level.size / Math.max(1, ceiling)) * 100,
+            )}%`;
+            const rowKey = `${side}-${i}-${level.price}`;
+            const rowClass = `kk-book__row kk-book__row--${side}`;
+            const inner = (
+              <>
+                <span
+                  className="kk-book__row-bar"
+                  style={{ width: barWidth }}
+                  aria-hidden
+                />
+                <span className="kk-book__row-price">
+                  {formatCents(level.price)}
+                </span>
+                <span className="kk-book__row-size">
+                  {level.size.toLocaleString()}
+                </span>
+              </>
+            );
+
+            if (onLevelClick) {
+              return (
+                <li key={rowKey}>
+                  <button
+                    type="button"
+                    className={rowClass}
+                    onClick={() => onLevelClick(level, side)}
+                  >
+                    {inner}
+                  </button>
+                </li>
+              );
+            }
+
+            return (
+              <li key={rowKey} className={rowClass}>
+                {inner}
+              </li>
+            );
+          })
         )}
       </ol>
     </div>
@@ -69,13 +113,19 @@ export function Orderbook({
   pollIntervalMs,
   depth = 6,
   layout = "stacked",
+  data,
+  onLevelClick,
 }: OrderbookProps) {
-  const { orderbook, isLoading, error } = useOrderbook(ticker, {
+  const hookResult = useOrderbook(ticker ?? "", {
     pollIntervalMs,
     depth,
+    enabled: !data && !!ticker,
   });
+  const orderbook = data ?? hookResult.orderbook;
+  const isLoading = data ? false : hookResult.isLoading;
+  const error = data ? null : hookResult.error;
 
-  const rootClass = ["kk-book", `kk-book--${layout}`, className]
+  const rootClass = ["kk", "kk-book", `kk-book--${layout}`, className]
     .filter(Boolean)
     .join(" ");
 
@@ -93,7 +143,7 @@ export function Orderbook({
     return (
       <div className={`${rootClass} kk-book--error`} role="alert">
         <p className="kk-card__error-text">
-          {error?.message ?? `Could not load orderbook for ${ticker}`}
+          {error?.message ?? `Could not load orderbook for ${ticker ?? ""}`}
         </p>
       </div>
     );
@@ -104,8 +154,18 @@ export function Orderbook({
 
   return (
     <div className={rootClass}>
-      <Side side="yes" levels={orderbook.yes} ceiling={yesCeiling} />
-      <Side side="no" levels={orderbook.no} ceiling={noCeiling} />
+      <Side
+        side="yes"
+        levels={orderbook.yes}
+        ceiling={yesCeiling}
+        onLevelClick={onLevelClick}
+      />
+      <Side
+        side="no"
+        levels={orderbook.no}
+        ceiling={noCeiling}
+        onLevelClick={onLevelClick}
+      />
     </div>
   );
 }

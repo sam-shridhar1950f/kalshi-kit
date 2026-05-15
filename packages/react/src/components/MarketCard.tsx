@@ -4,15 +4,28 @@ import { formatCents } from "../format";
 import type { Market } from "../types";
 
 export interface MarketCardProps {
-  ticker: string;
+  /**
+   * Market ticker. Required unless `data` is supplied. When `data` is
+   * supplied the component skips fetching entirely and renders from `data`.
+   */
+  ticker?: string;
   /** Override or extend the root element className. */
   className?: string;
-  /** Polling interval in ms. Set to 0 to disable. Default 5000. */
+  /**
+   * Polling interval in ms. Set to 0 to disable. Default 5000.
+   * Ignored when `data` is supplied — the parent owns the data lifecycle.
+   */
   pollIntervalMs?: number;
   /** Called when the card is clicked; renders as a `<button>` when supplied. */
   onSelect?: (market: Market) => void;
   /** Hide the footer row (volume, status, close date). */
   hideFooter?: boolean;
+  /**
+   * Pre-fetched market data. When supplied, the component renders from this
+   * value and does not call `useMarket()`. Enables SSR, list rendering from a
+   * parent fetch, and storybook fixtures.
+   */
+  data?: Market;
 }
 
 function formatVolume(n: number): string {
@@ -58,9 +71,20 @@ export function MarketCard({
   pollIntervalMs,
   onSelect,
   hideFooter,
+  data,
 }: MarketCardProps) {
-  const { market, isLoading, error } = useMarket(ticker, { pollIntervalMs });
-  const rootClass = ["kk-card", className].filter(Boolean).join(" ");
+  // When `data` is supplied we short-circuit the hook by passing `enabled: false`.
+  // The hook keeps a stable signature; the unused tick/state work is trivial
+  // but `enabled` makes intent explicit and prevents any network traffic.
+  const hookResult = useMarket(ticker ?? "", {
+    pollIntervalMs,
+    enabled: !data && !!ticker,
+  });
+  const market = data ?? hookResult.market;
+  const isLoading = data ? false : hookResult.isLoading;
+  const error = data ? null : hookResult.error;
+
+  const rootClass = ["kk", "kk-card", className].filter(Boolean).join(" ");
 
   const yesPrice = market ? market.yes_bid : 0;
   const noPrice = market ? Math.max(0, 100 - yesPrice) : 0;
@@ -84,7 +108,7 @@ export function MarketCard({
     return (
       <div className={`${rootClass} kk-card--error`} role="alert">
         <p className="kk-card__error-text">
-          {error?.message ?? `Market ${ticker} not found`}
+          {error?.message ?? `Market ${ticker ?? ""} not found`}
         </p>
       </div>
     );

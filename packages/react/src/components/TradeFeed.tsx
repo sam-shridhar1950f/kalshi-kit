@@ -1,16 +1,33 @@
 import { useEffect, useState } from "react";
 import { useTrades } from "../hooks/useTrades";
 import { formatCents } from "../format";
+import type { Trade } from "../types";
 
 export interface TradeFeedProps {
-  ticker: string;
+  /**
+   * Market ticker. Required unless `data` is supplied.
+   */
+  ticker?: string;
   className?: string;
   /** How many trades to show. Default 20. */
   limit?: number;
-  /** Polling interval in ms. Default 3000. */
+  /**
+   * Polling interval in ms. Default 3000.
+   * Ignored when `data` is supplied.
+   */
   pollIntervalMs?: number;
   /** Override the heading text. Default "RECENT TRADES". */
   heading?: string;
+  /**
+   * Pre-fetched trades. When supplied, the component renders from this
+   * value and does not call `useTrades()`.
+   */
+  data?: Trade[];
+  /**
+   * Called when a trade row is clicked. Wires the row as a `<button>` when
+   * supplied. Visual polish lands in Sprint 3.
+   */
+  onTradeClick?: (trade: Trade) => void;
 }
 
 function formatRelative(iso: string, now: number): string {
@@ -41,13 +58,20 @@ export function TradeFeed({
   limit = 20,
   pollIntervalMs,
   heading = "Recent trades",
+  data,
+  onTradeClick,
 }: TradeFeedProps) {
-  const { trades, isLoading, error } = useTrades(ticker, {
+  const hookResult = useTrades(ticker ?? "", {
     limit,
     pollIntervalMs,
+    enabled: !data && !!ticker,
   });
+  const trades = data ?? hookResult.trades;
+  const isLoading = data ? false : hookResult.isLoading;
+  const error = data ? null : hookResult.error;
+
   const now = useNow(1000);
-  const rootClass = ["kk-feed", className].filter(Boolean).join(" ");
+  const rootClass = ["kk", "kk-feed", className].filter(Boolean).join(" ");
 
   if (isLoading && trades.length === 0) {
     return (
@@ -87,12 +111,12 @@ export function TradeFeed({
         <ol className="kk-feed__list">
           {trades.map((t) => {
             const price = t.takerSide === "yes" ? t.yesPrice : t.noPrice;
-            return (
-              <li
-                key={t.id}
-                className={`kk-feed__row kk-feed__row--${t.takerSide}`}
-              >
-                <span className="kk-feed__side">{t.takerSide.toUpperCase()}</span>
+            const rowClass = `kk-feed__row kk-feed__row--${t.takerSide}`;
+            const inner = (
+              <>
+                <span className="kk-feed__side">
+                  {t.takerSide.toUpperCase()}
+                </span>
                 <span className="kk-feed__price">{formatCents(price)}</span>
                 <span className="kk-feed__size">
                   ×{t.count.toLocaleString()}
@@ -100,6 +124,26 @@ export function TradeFeed({
                 <span className="kk-feed__time">
                   {formatRelative(t.createdAt, now)}
                 </span>
+              </>
+            );
+
+            if (onTradeClick) {
+              return (
+                <li key={t.id}>
+                  <button
+                    type="button"
+                    className={rowClass}
+                    onClick={() => onTradeClick(t)}
+                  >
+                    {inner}
+                  </button>
+                </li>
+              );
+            }
+
+            return (
+              <li key={t.id} className={rowClass}>
+                {inner}
               </li>
             );
           })}

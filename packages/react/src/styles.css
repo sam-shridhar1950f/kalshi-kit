@@ -3,10 +3,21 @@
  * Import once at the root of your app:
  *   import "@kalshi-kit/react/styles.css";
  *
- * Override any variable on `.kk-card` (or a parent) to re-theme.
+ * Every component carries the `.kk` class on its root. All design tokens live
+ * on `.kk` so a consumer can override any variable on `<body>`, on a wrapping
+ * `<div className="kk">`, or on a single component instance and have it cascade
+ * to every nested kit element.
+ *
+ * Theme resolution:
+ *   - `data-kk-theme="light"` → always light
+ *   - `data-kk-theme="dark"`  → always dark
+ *   - no attribute            → follows `prefers-color-scheme`
  */
 
-.kk-card {
+/* ---------- Token scope ---------- */
+
+.kk {
+  /* Color tokens */
   --kk-bg: #ffffff;
   --kk-text: #09090b;
   --kk-text-muted: #71717a;
@@ -16,18 +27,86 @@
   --kk-yes-bg: #f0fdf4;
   --kk-no: #dc2626;
   --kk-no-bg: #fef2f2;
+  --kk-focus: #2563eb;
+
+  /* Shape & elevation */
   --kk-radius: 12px;
   --kk-radius-sm: 8px;
   --kk-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 1px rgba(0, 0, 0, 0.03);
   --kk-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.06);
+
+  /* Spacing scale */
+  --kk-space-1: 4px;
+  --kk-space-2: 8px;
+  --kk-space-3: 12px;
+  --kk-space-4: 16px;
+  --kk-space-5: 20px;
+  --kk-space-6: 24px;
+
+  /* Motion */
+  --kk-duration-fast: 120ms;
+  --kk-duration-base: 200ms;
+  --kk-duration-slow: 600ms;
+  --kk-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* Typography */
   --kk-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
+}
 
+/* ---------- Dark theme overrides ---------- *
+ * Repeat the dark block twice on purpose: once for explicit `data-kk-theme="dark"`
+ * and once inside a `prefers-color-scheme: dark` media query that excludes
+ * explicit `data-kk-theme="light"`. The repetition keeps the override list
+ * trivial to read; if it ever grows past a few lines, swap to custom-property
+ * remapping. Behaviour:
+ *   - theme="dark"   → always dark
+ *   - theme="light"  → always light
+ *   - theme="system" → follows OS (default when no data attribute is set)
+ */
+
+[data-kk-theme="dark"] .kk,
+.kk[data-kk-theme="dark"] {
+  --kk-bg: #09090b;
+  --kk-text: #fafafa;
+  --kk-text-muted: #a1a1aa;
+  --kk-border: #27272a;
+  --kk-border-hover: #3f3f46;
+  --kk-yes: #4ade80;
+  --kk-yes-bg: rgba(74, 222, 128, 0.1);
+  --kk-no: #f87171;
+  --kk-no-bg: rgba(248, 113, 113, 0.1);
+  --kk-focus: #60a5fa;
+  --kk-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --kk-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+@media (prefers-color-scheme: dark) {
+  :where(:not([data-kk-theme="light"])) .kk:where(:not([data-kk-theme="light"])),
+  .kk:where(:not([data-kk-theme="light"])):where(:not([data-kk-theme="dark"])) {
+    --kk-bg: #09090b;
+    --kk-text: #fafafa;
+    --kk-text-muted: #a1a1aa;
+    --kk-border: #27272a;
+    --kk-border-hover: #3f3f46;
+    --kk-yes: #4ade80;
+    --kk-yes-bg: rgba(74, 222, 128, 0.1);
+    --kk-no: #f87171;
+    --kk-no-bg: rgba(248, 113, 113, 0.1);
+    --kk-focus: #60a5fa;
+    --kk-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --kk-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* ---------- Card ---------- */
+
+.kk-card {
   background: var(--kk-bg);
   border: 1px solid var(--kk-border);
   border-radius: var(--kk-radius);
   box-shadow: var(--kk-shadow);
-  padding: 16px;
+  padding: var(--kk-space-4);
   font-family: var(--kk-font);
   color: var(--kk-text);
   display: flex;
@@ -41,8 +120,9 @@
 button.kk-card,
 .kk-card--interactive {
   cursor: pointer;
-  transition: transform 120ms ease, box-shadow 120ms ease,
-    border-color 120ms ease;
+  transition: transform var(--kk-duration-fast) ease,
+    box-shadow var(--kk-duration-fast) ease,
+    border-color var(--kk-duration-fast) ease;
   font: inherit;
   appearance: none;
 }
@@ -85,17 +165,17 @@ button.kk-card:focus-visible,
 .kk-prices {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: var(--kk-space-2);
 }
 
 .kk-price {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 10px 12px;
+  padding: 10px var(--kk-space-3);
   border-radius: var(--kk-radius-sm);
   font-feature-settings: "tnum" 1;
-  transition: background-color 600ms ease-out;
+  transition: background-color var(--kk-duration-slow) ease-out;
 }
 
 .kk-price--yes {
@@ -135,7 +215,7 @@ button.kk-card:focus-visible,
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px 12px;
+  gap: 10px var(--kk-space-3);
   font-size: 12px;
   color: var(--kk-text-muted);
   font-feature-settings: "tnum" 1;
@@ -146,7 +226,7 @@ button.kk-card:focus-visible,
   align-items: center;
   font-size: 11px;
   font-weight: 500;
-  padding: 2px 8px;
+  padding: 2px var(--kk-space-2);
   border-radius: 999px;
   text-transform: capitalize;
   letter-spacing: 0.01em;
@@ -211,32 +291,19 @@ button.kk-card:focus-visible,
   }
 }
 
-/* ----- Trade feed ----- */
+/* ---------- Trade feed ---------- */
 
 .kk-feed {
-  --kk-bg: #ffffff;
-  --kk-text: #09090b;
-  --kk-text-muted: #71717a;
-  --kk-border: #e4e4e7;
-  --kk-yes: #16a34a;
-  --kk-yes-bg: #f0fdf4;
-  --kk-no: #dc2626;
-  --kk-no-bg: #fef2f2;
-  --kk-radius: 12px;
-  --kk-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 1px rgba(0, 0, 0, 0.03);
-  --kk-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, sans-serif;
-
   background: var(--kk-bg);
   border: 1px solid var(--kk-border);
   border-radius: var(--kk-radius);
   box-shadow: var(--kk-shadow);
-  padding: 12px;
+  padding: var(--kk-space-3);
   font-family: var(--kk-font);
   color: var(--kk-text);
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--kk-space-1);
   box-sizing: border-box;
   width: 100%;
 }
@@ -245,7 +312,7 @@ button.kk-card:focus-visible,
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  padding: 0 4px 8px;
+  padding: 0 var(--kk-space-1) var(--kk-space-2);
   border-bottom: 1px solid var(--kk-border);
 }
 
@@ -260,7 +327,7 @@ button.kk-card:focus-visible,
 .kk-feed__heading-cols {
   display: grid;
   grid-template-columns: 40px 56px 56px 44px;
-  gap: 8px;
+  gap: var(--kk-space-2);
   text-align: right;
   font-size: 10px;
   font-weight: 500;
@@ -281,10 +348,20 @@ button.kk-card:focus-visible,
   display: grid;
   grid-template-columns: 40px 1fr 56px 44px;
   align-items: center;
-  gap: 8px;
-  padding: 4px 4px;
+  gap: var(--kk-space-2);
+  padding: var(--kk-space-1) var(--kk-space-1);
   font-size: 13px;
   font-feature-settings: "tnum" 1;
+}
+
+button.kk-feed__row {
+  background: transparent;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
 }
 
 .kk-feed__side {
@@ -330,7 +407,7 @@ button.kk-card:focus-visible,
 }
 
 .kk-feed__empty {
-  padding: 12px 4px;
+  padding: var(--kk-space-3) var(--kk-space-1);
   font-size: 12px;
   color: var(--kk-text-muted);
   text-align: center;
@@ -340,15 +417,15 @@ button.kk-card:focus-visible,
   border-color: var(--kk-no);
 }
 
-/* ----- Candlestick chart ----- */
+/* ---------- Candlestick chart ---------- */
 
 .kk-chart {
   position: relative;
-  background: var(--kk-bg, #ffffff);
-  border: 1px solid var(--kk-border, #e4e4e7);
-  border-radius: var(--kk-radius, 12px);
-  box-shadow: var(--kk-shadow, 0 1px 2px rgba(0, 0, 0, 0.04));
-  padding: 12px;
+  background: var(--kk-bg);
+  border: 1px solid var(--kk-border);
+  border-radius: var(--kk-radius);
+  box-shadow: var(--kk-shadow);
+  padding: var(--kk-space-3);
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -359,47 +436,26 @@ button.kk-card:focus-visible,
 
 .kk-chart__overlay {
   position: absolute;
-  inset: 12px;
-  border-radius: var(--kk-radius-sm, 8px);
+  inset: var(--kk-space-3);
+  border-radius: var(--kk-radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
   pointer-events: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  .kk-chart {
-    --kk-bg: #09090b;
-    --kk-border: #27272a;
-    --kk-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-  }
-}
-
-/* ----- Orderbook ----- */
+/* ---------- Orderbook ---------- */
 
 .kk-book {
-  --kk-bg: #ffffff;
-  --kk-text: #09090b;
-  --kk-text-muted: #71717a;
-  --kk-border: #e4e4e7;
-  --kk-yes: #16a34a;
-  --kk-yes-bg: #f0fdf4;
-  --kk-no: #dc2626;
-  --kk-no-bg: #fef2f2;
-  --kk-radius: 12px;
-  --kk-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 1px rgba(0, 0, 0, 0.03);
-  --kk-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, sans-serif;
-
   background: var(--kk-bg);
   border: 1px solid var(--kk-border);
   border-radius: var(--kk-radius);
   box-shadow: var(--kk-shadow);
-  padding: 12px;
+  padding: var(--kk-space-3);
   font-family: var(--kk-font);
   color: var(--kk-text);
   display: flex;
-  gap: 16px;
+  gap: var(--kk-space-4);
   width: 100%;
   box-sizing: border-box;
 }
@@ -416,14 +472,14 @@ button.kk-card:focus-visible,
 .kk-book__side {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--kk-space-1);
 }
 
 .kk-book__heading {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  padding: 0 4px 6px;
+  padding: 0 var(--kk-space-1) 6px;
   border-bottom: 1px solid var(--kk-border);
 }
 
@@ -443,7 +499,7 @@ button.kk-card:focus-visible,
 
 .kk-book__heading-cols {
   display: flex;
-  gap: 16px;
+  gap: var(--kk-space-4);
   font-size: 10px;
   font-weight: 500;
   color: var(--kk-text-muted);
@@ -464,12 +520,22 @@ button.kk-card:focus-visible,
   position: relative;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 4px 6px;
+  gap: var(--kk-space-2);
+  padding: var(--kk-space-1) 6px;
   font-size: 13px;
   font-feature-settings: "tnum" 1;
   border-radius: 4px;
   overflow: hidden;
+}
+
+button.kk-book__row {
+  background: transparent;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
 }
 
 .kk-book__row-bar {
@@ -479,7 +545,7 @@ button.kk-card:focus-visible,
   right: 0;
   pointer-events: none;
   border-radius: 4px;
-  transition: width 350ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: width 350ms var(--kk-ease);
 }
 
 .kk-book__row--yes .kk-book__row-bar {
@@ -525,52 +591,82 @@ button.kk-card:focus-visible,
   height: 18px;
 }
 
-@media (prefers-color-scheme: dark) {
-  .kk-card,
-  .kk-book,
-  .kk-feed {
-    --kk-bg: #09090b;
-    --kk-text: #fafafa;
-    --kk-text-muted: #a1a1aa;
-    --kk-border: #27272a;
-    --kk-border-hover: #3f3f46;
-    --kk-yes: #4ade80;
-    --kk-yes-bg: rgba(74, 222, 128, 0.1);
-    --kk-no: #f87171;
-    --kk-no-bg: rgba(248, 113, 113, 0.1);
-    --kk-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-    --kk-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.5);
-  }
+/* ---------- Theme-dependent pill colors ---------- *
+ * Status pills and skeleton gradient pick up the same `data-kk-theme` /
+ * `prefers-color-scheme` chain as the variables above. Repeat the dark block
+ * twice for the same reason — explicit override wins over the media query.
+ */
 
-  .kk-status--active {
+[data-kk-theme="dark"] .kk-status--active,
+.kk[data-kk-theme="dark"] .kk-status--active {
+  background: rgba(74, 222, 128, 0.15);
+  color: #4ade80;
+}
+[data-kk-theme="dark"] .kk-status--closed,
+[data-kk-theme="dark"] .kk-status--determined,
+[data-kk-theme="dark"] .kk-status--finalized,
+[data-kk-theme="dark"] .kk-status--inactive,
+.kk[data-kk-theme="dark"] .kk-status--closed,
+.kk[data-kk-theme="dark"] .kk-status--determined,
+.kk[data-kk-theme="dark"] .kk-status--finalized,
+.kk[data-kk-theme="dark"] .kk-status--inactive {
+  background: rgba(161, 161, 170, 0.15);
+  color: #a1a1aa;
+}
+[data-kk-theme="dark"] .kk-status--disputed,
+[data-kk-theme="dark"] .kk-status--amended,
+.kk[data-kk-theme="dark"] .kk-status--disputed,
+.kk[data-kk-theme="dark"] .kk-status--amended {
+  background: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
+}
+[data-kk-theme="dark"] .kk-status--initialized,
+.kk[data-kk-theme="dark"] .kk-status--initialized {
+  background: rgba(96, 165, 250, 0.15);
+  color: #60a5fa;
+}
+[data-kk-theme="dark"] .kk-price--flash-up,
+.kk[data-kk-theme="dark"] .kk-price--flash-up {
+  background-color: rgba(74, 222, 128, 0.4);
+}
+[data-kk-theme="dark"] .kk-price--flash-down,
+.kk[data-kk-theme="dark"] .kk-price--flash-down {
+  background-color: rgba(248, 113, 113, 0.4);
+}
+[data-kk-theme="dark"] .kk-skeleton,
+.kk[data-kk-theme="dark"] .kk-skeleton {
+  background: linear-gradient(90deg, #18181b 0%, #27272a 50%, #18181b 100%);
+  background-size: 200% 100%;
+}
+
+@media (prefers-color-scheme: dark) {
+  :where(:not([data-kk-theme="light"])) .kk-status--active {
     background: rgba(74, 222, 128, 0.15);
     color: #4ade80;
   }
-  .kk-status--closed,
-  .kk-status--determined,
-  .kk-status--finalized,
-  .kk-status--inactive {
+  :where(:not([data-kk-theme="light"])) .kk-status--closed,
+  :where(:not([data-kk-theme="light"])) .kk-status--determined,
+  :where(:not([data-kk-theme="light"])) .kk-status--finalized,
+  :where(:not([data-kk-theme="light"])) .kk-status--inactive {
     background: rgba(161, 161, 170, 0.15);
     color: #a1a1aa;
   }
-  .kk-status--disputed,
-  .kk-status--amended {
+  :where(:not([data-kk-theme="light"])) .kk-status--disputed,
+  :where(:not([data-kk-theme="light"])) .kk-status--amended {
     background: rgba(251, 191, 36, 0.15);
     color: #fbbf24;
   }
-  .kk-status--initialized {
+  :where(:not([data-kk-theme="light"])) .kk-status--initialized {
     background: rgba(96, 165, 250, 0.15);
     color: #60a5fa;
   }
-
-  .kk-price--flash-up {
+  :where(:not([data-kk-theme="light"])) .kk-price--flash-up {
     background-color: rgba(74, 222, 128, 0.4);
   }
-  .kk-price--flash-down {
+  :where(:not([data-kk-theme="light"])) .kk-price--flash-down {
     background-color: rgba(248, 113, 113, 0.4);
   }
-
-  .kk-skeleton {
+  :where(:not([data-kk-theme="light"])) .kk-skeleton {
     background: linear-gradient(90deg, #18181b 0%, #27272a 50%, #18181b 100%);
     background-size: 200% 100%;
   }
