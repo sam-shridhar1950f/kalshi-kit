@@ -1311,3 +1311,237 @@ button.kk-book__row:focus-visible {
   filter: brightness(1.08);
   color: #ffffff;
 }
+
+/* ---------- Wave C: MarketSearch / CategoryFilter ---------- */
+
+.kk-search {
+  position: relative;
+  display: block;
+  width: 100%;
+  font-family: var(--kk-font);
+  color: var(--kk-text);
+  box-sizing: border-box;
+}
+
+.kk-search__input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.kk-search__icon {
+  position: absolute;
+  left: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--kk-text-muted);
+  pointer-events: none;
+}
+
+.kk-search__input {
+  width: 100%;
+  box-sizing: border-box;
+  appearance: none;
+  background: var(--kk-bg);
+  border: 1px solid var(--kk-border);
+  border-radius: var(--kk-radius);
+  box-shadow: var(--kk-shadow);
+  color: var(--kk-text);
+  font-family: var(--kk-font);
+  font-size: 14px;
+  line-height: 1.3;
+  padding: 10px 36px 10px 34px;
+  transition:
+    border-color var(--kk-duration-fast) ease,
+    box-shadow var(--kk-duration-fast) ease;
+}
+
+/* Hide the native clear button so our custom one is the only one shown. */
+.kk-search__input::-webkit-search-cancel-button,
+.kk-search__input::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.kk-search__input::placeholder {
+  color: var(--kk-text-muted);
+}
+
+.kk-search__input:hover {
+  border-color: var(--kk-border-hover);
+}
+
+.kk-search__input:focus-visible,
+.kk-search__input:focus {
+  outline: none;
+  border-color: var(--kk-focus);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--kk-focus) 25%, transparent);
+}
+
+.kk-search__clear {
+  position: absolute;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  padding: 4px;
+  border-radius: 999px;
+  color: var(--kk-text-muted);
+  cursor: pointer;
+  font: inherit;
+  transition:
+    background-color var(--kk-duration-fast) ease,
+    color var(--kk-duration-fast) ease;
+}
+
+.kk-search__clear:hover {
+  background: color-mix(in oklab, var(--kk-text) 8%, transparent);
+  color: var(--kk-text);
+}
+
+.kk-search__clear:focus-visible {
+  outline: 2px solid var(--kk-focus);
+  outline-offset: 2px;
+}
+
+.kk-search__panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: var(--kk-bg);
+  border: 1px solid var(--kk-border);
+  border-radius: var(--kk-radius);
+  box-shadow: var(--kk-shadow-hover);
+  padding: 4px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.kk-search__panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.kk-search__panel::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--kk-text) 15%, transparent);
+  border-radius: 999px;
+}
+
+.kk-search__result {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--kk-space-2);
+  padding: 8px 10px;
+  border-radius: var(--kk-radius-sm);
+  font-size: 13px;
+  line-height: 1.3;
+  cursor: pointer;
+  box-sizing: border-box;
+  color: var(--kk-text);
+  transition: background-color var(--kk-duration-fast) ease;
+}
+
+.kk-search__result--active {
+  background: color-mix(in oklab, var(--kk-text) 5%, transparent);
+}
+
+.kk-search__result-label {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+.kk-search__result-price {
+  flex-shrink: 0;
+  color: var(--kk-yes);
+  font-weight: 600;
+  font-feature-settings: "tnum" 1;
+}
+
+.kk-search__empty {
+  padding: var(--kk-space-3);
+  font-size: 12px;
+  color: var(--kk-text-muted);
+  text-align: center;
+}
+
+.kk-search__error {
+  padding: var(--kk-space-3);
+  font-size: 12px;
+  color: var(--kk-no);
+  text-align: center;
+}
+
+.kk-search__loading-row {
+  height: 28px;
+  margin: 2px 0;
+  border-radius: var(--kk-radius-sm);
+}
+
+/* Category filter pills — mirror kk-range-pill so the kit stays coherent. */
+
+.kk-cat-row {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--kk-space-1);
+  font-family: var(--kk-font);
+}
+
+.kk-cat-pill {
+  border: 1px solid var(--kk-border);
+  background: transparent;
+  color: var(--kk-text-muted);
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition:
+    background-color var(--kk-duration-fast) ease,
+    color var(--kk-duration-fast) ease,
+    border-color var(--kk-duration-fast) ease;
+  font-family: inherit;
+}
+
+.kk-cat-pill:hover {
+  border-color: var(--kk-border-hover);
+  color: var(--kk-text);
+}
+
+.kk-cat-pill:focus-visible {
+  outline: 2px solid var(--kk-focus);
+  outline-offset: 2px;
+}
+
+.kk-cat-pill--active {
+  background: var(--kk-text);
+  border-color: var(--kk-text);
+  color: var(--kk-bg);
+}
+
+.kk-cat-pill--active:hover {
+  border-color: var(--kk-text);
+  color: var(--kk-bg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kk-search__input,
+  .kk-search__clear,
+  .kk-search__result,
+  .kk-cat-pill {
+    transition: none !important;
+  }
+}

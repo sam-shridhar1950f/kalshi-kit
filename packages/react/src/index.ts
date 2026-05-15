@@ -116,4 +116,16 @@ export type { UseWatchlistResult } from "./hooks/useWatchlist";
 export { ShareCard } from "./components/ShareCard";
 export type { ShareCardProps } from "./components/ShareCard";
 
+export { MarketSearch } from "./components/MarketSearch";
+export type { MarketSearchProps } from "./components/MarketSearch";
+
+export { CategoryFilter } from "./components/CategoryFilter";
+export type { CategoryFilterProps } from "./components/CategoryFilter";
+
+export { useMarketSearch } from "./hooks/useMarketSearch";
+export type {
+  UseMarketSearchOptions,
+  UseMarketSearchResult,
+} from "./hooks/useMarketSearch";
+
 export const VERSION = "0.0.1";
