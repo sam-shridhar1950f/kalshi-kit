@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "installCommand": "pnpm install --frozen-lockfile",
+  "buildCommand": "pnpm --filter @kalshi-kit/react build && pnpm --filter @kalshi-kit/next build && pnpm --filter next-demo build",
+  "outputDirectory": "examples/next-demo/.next"
+}
