@@ -49,6 +49,26 @@ function formatCloseTime(iso: string | undefined): string {
 }
 
 /**
+ * Decide whether to surface `yes_sub_title` as a subtitle line under the
+ * main title. Useful for scalar-titled events ("When will SpaceX IPO?")
+ * whose individual binary markets carry the actual YES phrasing in
+ * `yes_sub_title` ("Before Jun 1, 2026"). Skips trivial values like
+ * "Yes" / "No" and anything already mentioned in the title.
+ */
+function meaningfulSubtitle(
+  title: string,
+  sub: string | undefined,
+): string | null {
+  if (!sub) return null;
+  const trimmed = sub.trim();
+  if (trimmed.length < 2) return null;
+  const lowerSub = trimmed.toLowerCase();
+  if (lowerSub === "yes" || lowerSub === "no") return null;
+  if (title.toLowerCase().includes(lowerSub)) return null;
+  return trimmed;
+}
+
+/**
  * Briefly returns "up" or "down" when `value` changes so a parent can apply
  * a flash class. Resets to null after 700ms.
  */
@@ -130,10 +150,13 @@ export function MarketCard({
     noFlash ? ` kk-price--flash-${noFlash}` : ""
   }`;
 
+  const subtitle = meaningfulSubtitle(market.title, market.yes_sub_title);
+
   const content = (
     <>
       <div className="kk-card__header">
         <h3 className="kk-card__title">{market.title}</h3>
+        {subtitle ? <p className="kk-card__subtitle">{subtitle}</p> : null}
       </div>
       <div className="kk-prices">
         <div className={yesClass}>

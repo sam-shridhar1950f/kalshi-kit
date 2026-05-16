@@ -35,7 +35,7 @@ const HERO_TICKERS = [
   { ticker: "KXPGATOUR-PGC26-SSCH", label: "PGA · Scheffler" },
   { ticker: "KXUFCFIGHT-26MAY16DIAPER-PER", label: "MMA · Diaz v Perry" },
   { ticker: "KXNEWOUTBREAKHANTA-26", label: "Outbreak · Hantavirus" },
-  { ticker: "KXIPOSPACEX-26JUN01", label: "Economics · SpaceX IPO" },
+  { ticker: "KXMUSKTRILLION-27", label: "Tech · Musk trillionaire" },
 ];
 
 const TRENDING_TICKERS = [

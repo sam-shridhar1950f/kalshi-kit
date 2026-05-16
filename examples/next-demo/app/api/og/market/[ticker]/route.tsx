@@ -44,6 +44,7 @@ export async function GET(
   const { ticker } = await ctx.params;
 
   let title = ticker;
+  let subtitle: string | null = null;
   let yesPrice = 0;
   let noPrice = 0;
   let status = "unknown";
@@ -59,6 +60,17 @@ export async function GET(
     const json = (await response.json()) as { market?: Record<string, unknown> };
     const m = json.market ?? {};
     title = String(m.title ?? ticker);
+    const rawSub =
+      typeof m.yes_sub_title === "string" ? m.yes_sub_title.trim() : "";
+    const lowerSub = rawSub.toLowerCase();
+    if (
+      rawSub.length >= 2 &&
+      lowerSub !== "yes" &&
+      lowerSub !== "no" &&
+      !title.toLowerCase().includes(lowerSub)
+    ) {
+      subtitle = rawSub;
+    }
     yesPrice = dollarsToCents(m.yes_bid_dollars ?? m.yes_bid ?? 0);
     noPrice = Math.max(0, 100 - yesPrice);
     status = String(m.status ?? "unknown");
@@ -116,16 +128,36 @@ export async function GET(
         <div
           style={{
             display: "flex",
-            fontSize: 40,
-            fontWeight: 700,
-            lineHeight: 1.15,
-            letterSpacing: "-0.02em",
-            color: "#fafafa",
+            flexDirection: "column",
+            gap: 6,
             marginBottom: 32,
-            maxWidth: "100%",
           }}
         >
-          {title.length > 110 ? `${title.slice(0, 107)}…` : title}
+          <div
+            style={{
+              display: "flex",
+              fontSize: 40,
+              fontWeight: 700,
+              lineHeight: 1.15,
+              letterSpacing: "-0.02em",
+              color: "#fafafa",
+              maxWidth: "100%",
+            }}
+          >
+            {title.length > 110 ? `${title.slice(0, 107)}…` : title}
+          </div>
+          {subtitle ? (
+            <div
+              style={{
+                display: "flex",
+                fontSize: 22,
+                color: "#a1a1aa",
+                lineHeight: 1.25,
+              }}
+            >
+              {subtitle.length > 90 ? `${subtitle.slice(0, 87)}…` : subtitle}
+            </div>
+          ) : null}
         </div>
 
         {errored ? (
