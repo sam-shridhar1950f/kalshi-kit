@@ -1,6 +1,6 @@
 {
   "name": "@kalshi-kit/next",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "One-line Next.js helper that proxies Kalshi API requests through your app",
   "license": "MIT",
   "author": "Sam <sam.shridhar1950f@gmail.com>",
