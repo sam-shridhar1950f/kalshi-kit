@@ -31,8 +31,8 @@ import { Section } from "./_components/Section";
 import { usePersistedState } from "./_components/usePersistedState";
 
 const HERO_TICKERS = [
-  { ticker: "KXNFLAFCCHAMP-27-CIN", label: "NFL · AFC · CIN" },
   { ticker: "KXPGATOUR-PGC26-SSCH", label: "PGA · Scheffler" },
+  { ticker: "KXNFLAFCCHAMP-27-CIN", label: "NFL · AFC · CIN" },
   { ticker: "KXUFCFIGHT-26MAY16DIAPER-PER", label: "MMA · Diaz v Perry" },
   { ticker: "KXNEWOUTBREAKHANTA-26", label: "Outbreak · Hantavirus" },
   { ticker: "KXMUSKTRILLION-27", label: "Tech · Musk trillionaire" },
