@@ -28,6 +28,7 @@ import { AppNav } from "./_components/AppNav";
 import { InstallCard } from "./_components/InstallCard";
 import { type PresetName } from "./_components/PresetSelector";
 import { Section } from "./_components/Section";
+import { usePersistedState } from "./_components/usePersistedState";
 
 const HERO_TICKERS = [
   { ticker: "KXNFLAFCCHAMP-27-CIN", label: "NFL · AFC · CIN" },
@@ -73,8 +74,14 @@ export default function Page() {
 ];
 
 export default function Page() {
-  const [theme, setTheme] = useState<KalshiTheme>("system");
-  const [preset, setPreset] = useState<PresetName>("default");
+  const [theme, setTheme] = usePersistedState<KalshiTheme>(
+    "kalshi-kit-demo:theme",
+    "system",
+  );
+  const [preset, setPreset] = usePersistedState<PresetName>(
+    "kalshi-kit-demo:preset",
+    "default",
+  );
   const [ticker, setTicker] = useState(HERO_TICKERS[0]!.ticker);
   const [range, setRange] = useState<TimeRange>("1d");
   const [category, setCategory] = useState<string | null>(null);

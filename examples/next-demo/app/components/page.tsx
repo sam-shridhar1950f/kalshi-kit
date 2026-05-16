@@ -26,6 +26,7 @@ import {
 import { AppNav } from "../_components/AppNav";
 import { Showcase } from "../_components/Showcase";
 import { type PresetName } from "../_components/PresetSelector";
+import { usePersistedState } from "../_components/usePersistedState";
 
 // The aliens event has 20M+ volume on its headline market and five child
 // markets (great for EventMarketList). KXALIENS-27 is both an event_ticker
@@ -34,8 +35,14 @@ const TICKER = "KXALIENS-27";
 const EVENT = "KXALIENS-27";
 
 export default function ComponentsPage() {
-  const [theme, setTheme] = useState<KalshiTheme>("system");
-  const [preset, setPreset] = useState<PresetName>("default");
+  const [theme, setTheme] = usePersistedState<KalshiTheme>(
+    "kalshi-kit-demo:theme",
+    "system",
+  );
+  const [preset, setPreset] = usePersistedState<PresetName>(
+    "kalshi-kit-demo:preset",
+    "default",
+  );
 
   return (
     <KalshiProvider theme={theme}>
