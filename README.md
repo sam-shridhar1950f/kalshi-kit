@@ -50,7 +50,7 @@ The Next.js helper proxies `/api/kalshi/*` on the server so the browser stays in
 A live OG-image endpoint at `kalshi-kit-demo.vercel.app/api/og/market/[ticker]` renders any Kalshi market as a PNG (1200x630) for embeds and OG cards. Sample below:
 
 <p align="center">
-  <img src="https://kalshi-kit-demo.vercel.app/api/og/market/KXPRESPARTY-2028-D" alt="Live market card" width="640" />
+  <img src="https://kalshi-kit-demo.vercel.app/api/og/market/KXALIENS-27" alt="Live market card" width="640" />
 </p>
 
 ## Components

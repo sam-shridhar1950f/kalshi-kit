@@ -27,10 +27,11 @@ import { AppNav } from "../_components/AppNav";
 import { Showcase } from "../_components/Showcase";
 import { type PresetName } from "../_components/PresetSelector";
 
-// Long-dated presidential market — closes Nov 2029 — so the gallery stays
-// stable across deploys without periodic ticker swaps.
-const TICKER = "KXPRESPARTY-2028-D";
-const EVENT = "KXNEWPOPE-70";
+// The aliens event has 20M+ volume on its headline market and five child
+// markets (great for EventMarketList). KXALIENS-27 is both an event_ticker
+// and the ticker of its primary "Before 2027" market.
+const TICKER = "KXALIENS-27";
+const EVENT = "KXALIENS-27";
 
 export default function ComponentsPage() {
   const [theme, setTheme] = useState<KalshiTheme>("system");
@@ -109,9 +110,9 @@ export default function ComponentsPage() {
             <Showcase
               name="CountdownTimer"
               description="Live countdown to a target time. Updates every second."
-              code={`<CountdownTimer to="2029-11-07T00:00:00Z" />`}
+              code={`<CountdownTimer to="2027-01-01T00:00:00Z" />`}
             >
-              <CountdownTimer to="2029-11-07T00:00:00Z" />
+              <CountdownTimer to="2027-01-01T00:00:00Z" />
             </Showcase>
 
             <Showcase
@@ -149,11 +150,11 @@ export default function ComponentsPage() {
               name="ShareCard"
               wide
               description="Copy-link and tweet buttons that build a clean URL."
-              code={`<ShareCard ticker="${TICKER}" title="Will Democrats win the 2028 presidency?" />`}
+              code={`<ShareCard ticker="${TICKER}" title="Will the U.S. confirm aliens exist?" />`}
             >
               <ShareCard
                 ticker={TICKER}
-                title="Will Democrats win the 2028 presidency?"
+                title="Will the U.S. confirm aliens exist?"
               />
             </Showcase>
 
