@@ -7,9 +7,8 @@ import {
   CountdownTimer,
   EventCard,
   EventMarketList,
-  ExchangeStatusBadge,
-  KalshiProvider,
   EventSearch,
+  KalshiProvider,
   MarketCard,
   MarketSparkline,
   Orderbook,
@@ -25,10 +24,10 @@ import {
   type TimeRange,
 } from "@kalshi-kit/react";
 
+import { AppNav } from "./_components/AppNav";
 import { InstallCard } from "./_components/InstallCard";
-import { PresetSelector, type PresetName } from "./_components/PresetSelector";
+import { type PresetName } from "./_components/PresetSelector";
 import { Section } from "./_components/Section";
-import { ThemeToggle } from "./_components/ThemeToggle";
 
 const HERO_TICKERS = [
   { ticker: "KXNFLAFCCHAMP-27-CIN", label: "NFL · AFC · CIN" },
@@ -97,37 +96,12 @@ export default function Page() {
   return (
     <KalshiProvider theme={theme}>
       <div className="demo-root" data-preset={preset}>
-        <header className="demo-nav">
-          <div className="demo-nav__brand">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/logo.png"
-              alt="kalshi-kit"
-              className="demo-nav__logo-img"
-            />
-            <ExchangeStatusBadge />
-          </div>
-          <div className="demo-nav__right">
-            <a
-              className="demo-nav__link"
-              href="https://github.com/sam-shridhar1950f/kalshi-kit"
-              target="_blank"
-              rel="noreferrer"
-            >
-              GitHub
-            </a>
-            <a
-              className="demo-nav__link"
-              href="https://npmjs.com/package/@kalshi-kit/react"
-              target="_blank"
-              rel="noreferrer"
-            >
-              npm
-            </a>
-            <PresetSelector value={preset} onChange={setPreset} />
-            <ThemeToggle theme={theme} onChange={setTheme} />
-          </div>
-        </header>
+        <AppNav
+          theme={theme}
+          setTheme={setTheme}
+          preset={preset}
+          setPreset={setPreset}
+        />
 
         <main className="demo-main">
           {/* ───── Hero ───── */}
