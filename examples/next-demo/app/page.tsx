@@ -239,6 +239,7 @@ export default function Page() {
               <ShareCard
                 ticker={ticker}
                 title="Live demo of @kalshi-kit/react"
+                url={`https://kalshi-kit.dev/share/m/${ticker}`}
               />
             </div>
           </Section>

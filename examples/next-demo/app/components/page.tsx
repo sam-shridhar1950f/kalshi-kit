@@ -156,12 +156,17 @@ export default function ComponentsPage() {
             <Showcase
               name="ShareCard"
               wide
-              description="Copy-link and tweet buttons that build a clean URL."
-              code={`<ShareCard ticker="${TICKER}" title="Will the U.S. confirm aliens exist?" />`}
+              description="Copy-link and tweet buttons. Point url at a page with OG meta tags and Twitter/Slack will unfurl a rich card."
+              code={`<ShareCard
+  ticker="${TICKER}"
+  title="Will the U.S. confirm aliens exist?"
+  url={\`https://kalshi-kit.dev/share/m/\${TICKER}\`}
+/>`}
             >
               <ShareCard
                 ticker={TICKER}
                 title="Will the U.S. confirm aliens exist?"
+                url={`https://kalshi-kit.dev/share/m/${TICKER}`}
               />
             </Showcase>
 

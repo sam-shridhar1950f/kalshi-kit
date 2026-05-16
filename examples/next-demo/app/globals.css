@@ -837,6 +837,78 @@ pre {
   margin-top: 16px;
 }
 
+/* ---------- Share landing page (/share/m/[ticker]) ---------- */
+
+.share-root {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 88px 24px 96px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+}
+
+.share-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--demo-text-muted, #71717a);
+  margin: 0;
+}
+
+.share-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--kk-yes, #10b981);
+}
+
+.share-title {
+  font-size: clamp(24px, 3vw, 32px);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.share-card {
+  margin-top: 4px;
+}
+
+.share-cta {
+  display: flex;
+  gap: 8px;
+}
+
+.share-cta > * {
+  flex: 1;
+}
+
+.share-footer {
+  margin: 24px 0 0 0;
+  font-size: 13px;
+  color: var(--demo-text-muted, #71717a);
+}
+
+.share-link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--demo-border-strong, #d4d4d8);
+  text-underline-offset: 3px;
+}
+
+.share-link:hover {
+  color: var(--demo-text, #09090b);
+  text-decoration-color: currentColor;
+}
+
 /* ---------- Responsive overrides for the new hero layout ---------- */
 
 @media (max-width: 880px) {
