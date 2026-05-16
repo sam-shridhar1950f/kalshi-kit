@@ -20,9 +20,12 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           registry-url: https://registry.npmjs.org
           cache: pnpm
+
+      - name: Upgrade npm to OIDC-capable version
+        run: npm install -g npm@latest
 
       - run: pnpm install --frozen-lockfile
 
@@ -30,7 +33,9 @@ jobs:
       - run: pnpm --filter @kalshi-kit/next build
 
       - name: Publish @kalshi-kit/react
-        run: pnpm --filter @kalshi-kit/react publish --no-git-checks --provenance --access public
+        working-directory: packages/react
+        run: npm publish --provenance --access public
 
       - name: Publish @kalshi-kit/next
-        run: pnpm --filter @kalshi-kit/next publish --no-git-checks --provenance --access public
+        working-directory: packages/next
+        run: npm publish --provenance --access public
