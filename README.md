@@ -9,6 +9,7 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/@kalshi-kit/react"><img src="https://img.shields.io/npm/v/@kalshi-kit/react?label=%40kalshi-kit%2Freact&color=10b981" alt="@kalshi-kit/react on npm" /></a>
   <a href="https://www.npmjs.com/package/@kalshi-kit/next"><img src="https://img.shields.io/npm/v/@kalshi-kit/next?label=%40kalshi-kit%2Fnext&color=10b981" alt="@kalshi-kit/next on npm" /></a>
+  <a href="https://www.npmjs.com/package/@kalshi-kit/react"><img src="https://img.shields.io/npm/dm/@kalshi-kit/react?label=downloads&color=71717a" alt="monthly downloads" /></a>
   <a href="https://kalshi-kit.dev"><img src="https://img.shields.io/badge/demo-kalshi--kit.dev-2563eb" alt="live demo" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/npm/l/@kalshi-kit/react?color=71717a" alt="MIT license" /></a>
   <a href="https://bundlephobia.com/package/@kalshi-kit/react"><img src="https://img.shields.io/bundlephobia/minzip/@kalshi-kit/react?label=react%20gzip&color=71717a" alt="bundle size" /></a>
