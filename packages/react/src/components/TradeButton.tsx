@@ -21,14 +21,21 @@ export interface TradeButtonProps {
 function buildHref(
   baseUrl: string,
   ticker: string,
-  side: "yes" | "no",
+  _side: "yes" | "no",
   builderCode?: string,
 ): string {
+  // Kalshi's canonical market URL is `/markets/{series}/{event-slug}/{ticker}`
+  // (all lowercase). Without the API event slug we can't construct the full
+  // form; the closest robust shape is the lowercased ticker, which Kalshi
+  // redirects to the canonical URL in most cases. The `?side=` query is not
+  // recognised by Kalshi's router and was producing 404-shaped URLs, so it's
+  // dropped. `builder_code` IS Kalshi's documented affiliate parameter and
+  // stays.
   const root = baseUrl.replace(/\/+$/, "");
-  const encodedTicker = encodeURIComponent(ticker);
-  const params = `?side=${side}${
-    builderCode ? `&builder_code=${encodeURIComponent(builderCode)}` : ""
-  }`;
+  const encodedTicker = encodeURIComponent(ticker.toLowerCase());
+  const params = builderCode
+    ? `?builder_code=${encodeURIComponent(builderCode)}`
+    : "";
   return `${root}/markets/${encodedTicker}${params}`;
 }
 

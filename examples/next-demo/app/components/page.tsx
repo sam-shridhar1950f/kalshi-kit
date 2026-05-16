@@ -156,17 +156,19 @@ export default function ComponentsPage() {
             <Showcase
               name="ShareCard"
               wide
-              description="Copy-link and tweet buttons. Point url at a page with OG meta tags and Twitter/Slack will unfurl a rich card."
+              description="Copy-link and tweet buttons, plus a live preview of the unfurled card. Twitter, Slack, iMessage, Discord and LinkedIn all show the OG image when the URL points at a page with proper meta tags."
               code={`<ShareCard
   ticker="${TICKER}"
   title="Will the U.S. confirm aliens exist?"
   url={\`https://kalshi-kit.dev/share/m/\${TICKER}\`}
+  previewImage={\`https://kalshi-kit.dev/api/og/market/\${TICKER}\`}
 />`}
             >
               <ShareCard
                 ticker={TICKER}
                 title="Will the U.S. confirm aliens exist?"
                 url={`https://kalshi-kit.dev/share/m/${TICKER}`}
+                previewImage={`https://kalshi-kit.dev/api/og/market/${TICKER}`}
               />
             </Showcase>
 

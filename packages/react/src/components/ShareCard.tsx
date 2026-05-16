@@ -11,6 +11,12 @@ export interface ShareCardProps {
   className?: string;
   /** Hide the inline copy of the URL (just shows buttons). */
   hideUrl?: boolean;
+  /**
+   * URL of a 1200x630 image (typically an OG endpoint) to show as a preview
+   * thumbnail above the URL row. Lets a user see how the tweet card will
+   * unfurl on Twitter/Slack/iMessage before they share. Omit to hide.
+   */
+  previewImage?: string;
 }
 
 const COPY_LABEL_RESET_MS = 1500;
@@ -30,6 +36,7 @@ export function ShareCard({
   tweetText,
   className,
   hideUrl = false,
+  previewImage,
 }: ShareCardProps) {
   const shareUrl = url ?? defaultUrl(ticker);
   const tweet =
@@ -67,27 +74,44 @@ export function ShareCard({
 
   return (
     <div className={rootClass}>
-      {!hideUrl ? (
-        <span className="kk-share__url" title={shareUrl}>
-          {shareUrl}
-        </span>
+      {previewImage ? (
+        <div className="kk-share__preview-wrap">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={previewImage}
+            alt={title ? `${title} preview` : "Share preview"}
+            className="kk-share__preview"
+            loading="lazy"
+            decoding="async"
+          />
+          <span className="kk-share__preview-caption">
+            Tweet preview · unfurls on X, Slack, iMessage
+          </span>
+        </div>
       ) : null}
-      <div className="kk-share__actions">
-        <button
-          type="button"
-          className="kk-share__btn"
-          onClick={handleCopy}
-          aria-live="polite"
-        >
-          {copied ? "Copied" : "Copy"}
-        </button>
-        <button
-          type="button"
-          className="kk-share__btn kk-share__btn--primary"
-          onClick={handleTweet}
-        >
-          Tweet
-        </button>
+      <div className="kk-share__row">
+        {!hideUrl ? (
+          <span className="kk-share__url" title={shareUrl}>
+            {shareUrl}
+          </span>
+        ) : null}
+        <div className="kk-share__actions">
+          <button
+            type="button"
+            className="kk-share__btn"
+            onClick={handleCopy}
+            aria-live="polite"
+          >
+            {copied ? "Copied" : "Copy"}
+          </button>
+          <button
+            type="button"
+            className="kk-share__btn kk-share__btn--primary"
+            onClick={handleTweet}
+          >
+            Tweet
+          </button>
+        </div>
       </div>
     </div>
   );

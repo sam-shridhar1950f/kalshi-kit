@@ -87,6 +87,12 @@ export default function Page() {
   const [category, setCategory] = useState<string | null>(null);
 
   const heroRef = useRef<HTMLElement | null>(null);
+  const installRef = useRef<HTMLDivElement | null>(null);
+
+  const scrollToInstall = useCallback(() => {
+    if (typeof window === "undefined") return;
+    installRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
 
   const { interval, limit } = rangeToCandleParams(range);
 
@@ -127,6 +133,40 @@ export default function Page() {
                 npm install @kalshi-kit/react
               </code>
             </p>
+
+            <div className="demo-hero__actions">
+              <button
+                type="button"
+                className="demo-cta"
+                onClick={scrollToInstall}
+                title="Jump to the 3-step setup"
+              >
+                Get started
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  aria-hidden
+                >
+                  <path
+                    d="M3 4.5L6 7.5L9 4.5"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+              <a
+                className="demo-cta demo-cta--ghost"
+                href="https://github.com/sam-shridhar1950f/kalshi-kit"
+                target="_blank"
+                rel="noreferrer"
+              >
+                View on GitHub
+              </a>
+            </div>
 
             <div className="demo-picker">
               {HERO_TICKERS.map((p) => (
@@ -220,6 +260,7 @@ export default function Page() {
           </Section>
 
           {/* ───── Install ───── */}
+          <div ref={installRef}>
           <Section
             kicker="Get started"
             title="Three lines and you're rendering live markets"
@@ -240,9 +281,11 @@ export default function Page() {
                 ticker={ticker}
                 title="Live demo of @kalshi-kit/react"
                 url={`https://kalshi-kit.dev/share/m/${ticker}`}
+                previewImage={`https://kalshi-kit.dev/api/og/market/${ticker}`}
               />
             </div>
           </Section>
+          </div>
 
           <footer className="demo-footer">
             <span>
