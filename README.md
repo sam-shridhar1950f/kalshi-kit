@@ -94,6 +94,8 @@ import { KalshiProvider } from "@kalshi-kit/react";
 <MarketCard ticker="..." colors={{ yes: "#3b82f6", no: "#eab308" }} />
 ```
 
+See [docs/theming.md](./docs/theming.md) for the full token reference, brand presets, and Tailwind / shadcn integration.
+
 ## Demo
 
 [kalshi-kit-demo.vercel.app](https://kalshi-kit-demo.vercel.app)
