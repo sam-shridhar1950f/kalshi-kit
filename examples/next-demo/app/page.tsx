@@ -32,9 +32,9 @@ import { Section } from "./_components/Section";
 const HERO_TICKERS = [
   { ticker: "KXNFLAFCCHAMP-27-CIN", label: "NFL · AFC · CIN" },
   { ticker: "KXPGATOUR-PGC26-SSCH", label: "PGA · Scheffler" },
-  { ticker: "KXMLBGAME-26MAY151910MILMIN-MIL", label: "MLB · MIL @ MIN" },
-  { ticker: "KXITFMATCH-26MAY15PRIDEL-DEL", label: "Tennis · Del Pino" },
-  { ticker: "KXCS2GAME-26MAY151630VITNAVI-VIT", label: "CS2 · Vitality" },
+  { ticker: "KXUFCFIGHT-26MAY16DIAPER-PER", label: "MMA · Diaz v Perry" },
+  { ticker: "KXNEWOUTBREAKHANTA-26", label: "Outbreak · Hantavirus" },
+  { ticker: "KXIPOSPACEX-26JUN01", label: "Economics · SpaceX IPO" },
 ];
 
 const TRENDING_TICKERS = [
