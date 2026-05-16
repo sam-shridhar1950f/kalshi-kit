@@ -1,6 +1,6 @@
 {
   "name": "@kalshi-kit/react",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Drop-in React components for Kalshi prediction markets",
   "license": "MIT",
   "author": "Sam <sam.shridhar1950f@gmail.com>",

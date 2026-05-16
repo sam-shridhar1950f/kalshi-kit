@@ -1,0 +1,38 @@
+name: Publish to npm
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm --filter @kalshi-kit/react build
+      - run: pnpm --filter @kalshi-kit/next build
+
+      - name: Publish @kalshi-kit/react
+        run: pnpm --filter @kalshi-kit/react publish --no-git-checks --provenance --access public
+
+      - name: Publish @kalshi-kit/next
+        run: pnpm --filter @kalshi-kit/next publish --no-git-checks --provenance --access public
