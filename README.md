@@ -1,6 +1,24 @@
-# kalshi-kit
+<p align="center">
+  <img src="docs/images/logo.png" alt="kalshi-kit" width="360" />
+</p>
 
-Drop-in React components for [Kalshi](https://kalshi.com) prediction markets.
+<p align="center">
+  Drop-in React components for <a href="https://kalshi.com">Kalshi</a> prediction markets.
+</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@kalshi-kit/react"><img src="https://img.shields.io/npm/v/@kalshi-kit/react?label=%40kalshi-kit%2Freact&color=10b981" alt="@kalshi-kit/react on npm" /></a>
+  <a href="https://www.npmjs.com/package/@kalshi-kit/next"><img src="https://img.shields.io/npm/v/@kalshi-kit/next?label=%40kalshi-kit%2Fnext&color=10b981" alt="@kalshi-kit/next on npm" /></a>
+  <a href="https://kalshi-kit.dev"><img src="https://img.shields.io/badge/demo-kalshi--kit.dev-2563eb" alt="live demo" /></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/npm/l/@kalshi-kit/react?color=71717a" alt="MIT license" /></a>
+  <a href="https://bundlephobia.com/package/@kalshi-kit/react"><img src="https://img.shields.io/bundlephobia/minzip/@kalshi-kit/react?label=react%20gzip&color=71717a" alt="bundle size" /></a>
+</p>
+
+<p align="center">
+  <a href="https://kalshi-kit.dev">
+    <img src="docs/images/hero-dark-solana.png" alt="kalshi-kit live demo" width="100%" />
+  </a>
+</p>
 
 ## Install
 
@@ -27,6 +45,14 @@ export default function Page() {
 
 The Next.js helper proxies `/api/kalshi/*` on the server so the browser stays inside its own origin. No API key needed for public market data.
 
+## Live preview
+
+The image below is rendered on every README view from a live Kalshi feed, served by the demo at `kalshi-kit.dev/api/og/market/[ticker]`:
+
+<p align="center">
+  <img src="https://kalshi-kit.dev/api/og/market/KXNFLAFCCHAMP-27-CIN" alt="Live market card" width="640" />
+</p>
+
 ## Components
 
 | Component | Renders |
@@ -41,7 +67,7 @@ The Next.js helper proxies `/api/kalshi/*` on the server so the browser stays in
 | `TradeButton` | Deep-link to kalshi.com with optional builder code |
 | `WatchlistButton` | localStorage-backed star toggle |
 | `ShareCard` | Copy-link and tweet buttons |
-| `MarketSearch` | Debounced autocomplete |
+| `EventSearch` | Debounced autocomplete over live events |
 | `CategoryFilter` | Category pill row |
 | `EventCard` | Header for a multi-outcome event |
 | `EventMarketList` | Ranked child markets with probability bars |
@@ -70,7 +96,7 @@ import { KalshiProvider } from "@kalshi-kit/react";
 
 ## Demo
 
-[kalshi-kit-demo.vercel.app](https://kalshi-kit-demo.vercel.app)
+[kalshi-kit.dev](https://kalshi-kit.dev)
 
 ## Packages
 
