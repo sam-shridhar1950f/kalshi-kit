@@ -27,7 +27,9 @@ import { AppNav } from "../_components/AppNav";
 import { Showcase } from "../_components/Showcase";
 import { type PresetName } from "../_components/PresetSelector";
 
-const TICKER = "KXNFLAFCCHAMP-27-CIN";
+// Long-dated presidential market — closes Nov 2029 — so the gallery stays
+// stable across deploys without periodic ticker swaps.
+const TICKER = "KXPRESPARTY-2028-D";
 const EVENT = "KXNEWPOPE-70";
 
 export default function ComponentsPage() {
@@ -54,8 +56,7 @@ export default function ComponentsPage() {
               Every component, live.
             </h1>
             <p className="demo-hero__lede">
-              Each card renders against the live Kalshi API. Copy any snippet
-              and drop it into your app.
+              Copy any snippet and drop it into your app.
             </p>
           </header>
 
@@ -108,9 +109,9 @@ export default function ComponentsPage() {
             <Showcase
               name="CountdownTimer"
               description="Live countdown to a target time. Updates every second."
-              code={`<CountdownTimer to="2027-01-30T00:00:00Z" />`}
+              code={`<CountdownTimer to="2029-11-07T00:00:00Z" />`}
             >
-              <CountdownTimer to="2027-01-30T00:00:00Z" />
+              <CountdownTimer to="2029-11-07T00:00:00Z" />
             </Showcase>
 
             <Showcase
@@ -148,9 +149,12 @@ export default function ComponentsPage() {
               name="ShareCard"
               wide
               description="Copy-link and tweet buttons that build a clean URL."
-              code={`<ShareCard ticker="${TICKER}" title="Will Cincinnati win the AFC?" />`}
+              code={`<ShareCard ticker="${TICKER}" title="Will Democrats win the 2028 presidency?" />`}
             >
-              <ShareCard ticker={TICKER} title="Will Cincinnati win the AFC?" />
+              <ShareCard
+                ticker={TICKER}
+                title="Will Democrats win the 2028 presidency?"
+              />
             </Showcase>
 
             <Showcase
