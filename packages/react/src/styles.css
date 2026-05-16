@@ -1290,7 +1290,7 @@ button.kk-book__row:focus-visible {
 
 .kk-share {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: var(--kk-space-3);
   background: var(--kk-bg);
   border: 1px solid var(--kk-border);
@@ -1302,6 +1302,35 @@ button.kk-book__row:focus-visible {
   font-size: 12px;
   box-sizing: border-box;
   width: 100%;
+}
+
+.kk-share__row {
+  display: flex;
+  align-items: center;
+  gap: var(--kk-space-3);
+  width: 100%;
+}
+
+.kk-share__preview-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.kk-share__preview {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1200 / 630;
+  object-fit: cover;
+  border-radius: var(--kk-radius-sm);
+  border: 1px solid var(--kk-border);
+}
+
+.kk-share__preview-caption {
+  font-size: 11px;
+  color: var(--kk-text-muted);
+  letter-spacing: 0.02em;
 }
 
 .kk-share__url {
