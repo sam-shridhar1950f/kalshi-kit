@@ -1,9 +1,29 @@
 import { useEffect, useRef, useState } from "react";
+import { KalshiApiError } from "../client";
 
 export interface PolledResource<T> {
   data: T | null;
   isLoading: boolean;
   error: Error | null;
+}
+
+const TRANSIENT_RETRY_DELAYS_MS = [600, 1800, 4500];
+
+function isTransient(err: unknown): boolean {
+  if (err instanceof KalshiApiError) {
+    return err.status === 429 || err.status === 503 || err.status === 502;
+  }
+  return false;
+}
+
+function sleep(ms: number, signal: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const t = setTimeout(resolve, ms);
+    signal.addEventListener("abort", () => {
+      clearTimeout(t);
+      reject(new DOMException("Aborted", "AbortError"));
+    });
+  });
 }
 
 export interface UsePolledResourceOptions<T> {
@@ -77,14 +97,30 @@ export function usePolledResource<T>(
     async function tick() {
       controller = new AbortController();
       const { signal } = controller;
+      let lastError: unknown = null;
+      for (let attempt = 0; attempt <= TRANSIENT_RETRY_DELAYS_MS.length; attempt++) {
+        try {
+          const next = await fetchRef.current(signal);
+          if (unmounted || signal.aborted) return;
+          setData(next);
+          setError(null);
+          lastError = null;
+          break;
+        } catch (e) {
+          if (unmounted || signal.aborted || isAbortError(e)) return;
+          lastError = e;
+          if (!isTransient(e) || attempt === TRANSIENT_RETRY_DELAYS_MS.length) break;
+          try {
+            await sleep(TRANSIENT_RETRY_DELAYS_MS[attempt]!, signal);
+          } catch {
+            return;
+          }
+        }
+      }
       try {
-        const next = await fetchRef.current(signal);
-        if (unmounted || signal.aborted) return;
-        setData(next);
-        setError(null);
-      } catch (e) {
-        if (unmounted || signal.aborted || isAbortError(e)) return;
-        setError(e instanceof Error ? e : new Error(String(e)));
+        if (lastError) {
+          setError(lastError instanceof Error ? lastError : new Error(String(lastError)));
+        }
       } finally {
         if (!unmounted && !signal.aborted) {
           setIsLoading(false);

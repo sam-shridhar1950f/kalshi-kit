@@ -13,6 +13,16 @@ import type {
   ISeriesApi,
   MouseEventParams,
 } from "lightweight-charts";
+import { KalshiApiError } from "../client";
+
+function friendlyErrorMessage(err: Error): string {
+  if (err instanceof KalshiApiError) {
+    if (err.status === 429) return "Rate limited by Kalshi — backing off.";
+    if (err.status >= 500) return "Kalshi API is having a moment. Retrying.";
+    if (err.status === 404) return "Market not found.";
+  }
+  return err.message;
+}
 import {
   useCandlesticks,
   type CandlestickInterval,
@@ -329,7 +339,7 @@ export const CandlestickChart = forwardRef<
     <div className={rootClass} style={{ height }}>
       {displayError ? (
         <div className="kk-chart__overlay" role="alert">
-          <p className="kk-card__error-text">{displayError.message}</p>
+          <p className="kk-card__error-text">{friendlyErrorMessage(displayError)}</p>
         </div>
       ) : null}
       {isLoading && candles.length === 0 && !displayError ? (
