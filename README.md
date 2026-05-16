@@ -47,10 +47,10 @@ The Next.js helper proxies `/api/kalshi/*` on the server so the browser stays in
 
 ## Live preview
 
-The image below is rendered on every README view from a live Kalshi feed, served by the demo at `kalshi-kit.dev/api/og/market/[ticker]`:
+A live OG-image endpoint at `kalshi-kit.dev/api/og/market/[ticker]` renders any Kalshi market as a PNG (1200x630) for embeds and OG cards. Sample below:
 
 <p align="center">
-  <img src="https://kalshi-kit.dev/api/og/market/KXNFLAFCCHAMP-27-CIN" alt="Live market card" width="640" />
+  <img src="docs/images/og-sample.png" alt="Live market card sample" width="640" />
 </p>
 
 ## Components
