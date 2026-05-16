@@ -984,15 +984,67 @@ button.kk-book__row:focus-visible {
 .kk-dial {
   position: relative;
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 10px;
   font-family: var(--kk-font);
   color: var(--kk-text);
   box-sizing: border-box;
 }
 
+.kk-dial__face {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .kk-dial__svg {
   display: block;
+}
+
+.kk-dial__toggle {
+  display: inline-flex;
+  padding: 3px;
+  background: var(--kk-surface-2, var(--kk-surface));
+  border: 1px solid var(--kk-border);
+  border-radius: 999px;
+  gap: 2px;
+}
+
+.kk-dial__toggle-btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--kk-text-muted);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.kk-dial__toggle-btn:hover {
+  color: var(--kk-text);
+}
+
+.kk-dial__toggle-btn--active.kk-dial__toggle-btn--yes {
+  background: color-mix(in srgb, var(--kk-yes) 18%, transparent);
+  color: var(--kk-yes);
+}
+
+.kk-dial__toggle-btn--active.kk-dial__toggle-btn--no {
+  background: color-mix(in srgb, var(--kk-no) 18%, transparent);
+  color: var(--kk-no);
+}
+
+.kk-dial--no .kk-dial__label {
+  color: var(--kk-no);
 }
 
 .kk-dial__arc {

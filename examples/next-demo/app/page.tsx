@@ -281,7 +281,6 @@ export default function Page() {
                 ticker={ticker}
                 title="Live demo of @kalshi-kit/react"
                 url={`https://kalshi-kit.dev/share/m/${ticker}`}
-                previewImage={`https://kalshi-kit.dev/api/og/market/${ticker}`}
               />
             </div>
           </Section>
