@@ -10,3 +10,4 @@ coverage/
 
 # Local marketing/launch notes (not for public)
 MARKETING.md
+.vercel

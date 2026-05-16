@@ -10,6 +10,7 @@
     "clean": "pnpm -r exec rm -rf dist node_modules"
   },
   "devDependencies": {
+    "next": "^14.2.3",
     "typescript": "^5.4.5"
   },
   "packageManager": "pnpm@9.0.0"
